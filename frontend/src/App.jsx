@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+
+import { withStore, useStore } from 'react-context-hook'
+
+
 import Chatbot from '@/components/Chatbot';
 import logo from '@/assets/images/logo.png';
 import api from '@/api';
@@ -7,7 +11,7 @@ import './App.css'; // Include the CSS file for styling
 function App() {
   const [isLoginVisible, setIsLoginVisible] = useState(true); // Track visibility of login screen
   const [isFormVisible, setIsFormVisible] = useState(false)
-  const [username, setUsername] = useState("")
+  const [username, setUsername] = useStore("username")
 
   const [formData, setFormData] = React.useState({
     age: "",
@@ -16,7 +20,7 @@ function App() {
     chat_tone: "formal", // default value
   });
 
-  const [personalityTraits, setPersonalityTraits] = useState({
+  const [characteristics, setCharacteristics] = useState({
     introvertido: false,
     extrovertido: false,
     analítico: false,
@@ -50,14 +54,15 @@ function App() {
 
   function handleCheckboxChange(e) {
     const { name, checked } = e.target;
-    setPersonalityTraits({ ...personalityTraits, [name]: checked });
+    setCharacteristics({ ...characteristics, [name]: checked });
   }
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("User's personality traits:", personalityTraits);
+    const data = formData
+    data["characteristics"] = Object.keys(characteristics).filter(key => characteristics[key]);
     setIsFormVisible(false); // Hide the form after submission
-    api.submitForm(username, personalityTraits)
+    api.submitForm(username, data)
   };
 
 
@@ -88,7 +93,7 @@ function App() {
             <form className="login-form" onSubmit={handleLogin}>
               <input
                 type="text"
-                placeholder="Username"
+                placeholder="Tu nombre"
                 className="input-field"
                 required
                 onChange={handleUsernameChange}
@@ -163,12 +168,12 @@ function App() {
             {/* Characteristics (Checkboxes) */}
             <fieldset>
               <legend>Características:</legend>
-              {Object.keys(personalityTraits).map((trait) => (
+              {Object.keys(characteristics).map((trait) => (
                 <label key={trait}>
                   <input
                     type="checkbox"
                     name={trait}
-                    checked={personalityTraits[trait]}
+                    checked={characteristics[trait]}
                     onChange={handleCheckboxChange}
                   />
                   {trait.charAt(0).toUpperCase() + trait.slice(1)}
@@ -190,4 +195,8 @@ function App() {
   );
 }
 
-export default App;
+const initialState = {
+  username: null,
+}
+
+export default withStore(App, initialState);

@@ -24,11 +24,12 @@ app.add_middleware(
 )
 
 class ChatMessage(BaseModel):
+    username: str
     message: str
 
 @app.post("/chats/")
-async def send_chat_message(user_message: ChatMessage):
-    gpt_response = chat_interaction(user_message.message)
+async def send_chat_message(chat_message: ChatMessage):
+    gpt_response = chat_interaction(chat_message.message, chat_message.username)
     return JSONResponse(content={"message": gpt_response})
 
 class LoginRequest(BaseModel):
@@ -55,6 +56,7 @@ class UserData(BaseModel):
 async def login_form(user_data: UserData):
     # solo puede fallar si el usuario ya existe
     user_dict = user_data.model_dump()
+    print(user_dict.model_dump())
     if mongo_client.insertar_usuario_inicial(user_dict) is not None:
         return JSONResponse(content={"message" : "true"})
     else:
@@ -64,7 +66,7 @@ async def login_form(user_data: UserData):
 class DiaryEntry(BaseModel):
     usuario: str  # Referencia al usuario que envia la entrada de diario
     entry: str
-    # Extra fields para añadir luego, no vienen en el input
+    # Extra fields para añadir luego, antes de insertar a la DB, no vienen en el input
     summary: str
     importance: float
 

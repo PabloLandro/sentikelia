@@ -1,10 +1,10 @@
 const BASE_URL = "http://localhost:8000";
 
-async function sendChatMessage(message) {
+async function sendChatMessage(message, username) {
   const res = await fetch(BASE_URL + `/chats`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message })
+    body: JSON.stringify({ "message":message, "username": username })
   });
   if (!res.ok) {
     return Promise.reject({ status: res.status, data: await res.json() });
@@ -29,7 +29,12 @@ async function login(username) {
 async function submitForm(username, data){
   let payload={}
   payload["username"] = username
-  payload["data"] = data
+  payload["age"] = parseInt(data["age"])
+  payload["characteristics"] = data["characteristics"]
+  payload["mood"] = data["mood"]
+  payload["important_context"] = data["important_context"]
+  payload["chat_tone"] = parseInt(data["chat_tone"])
+  console.log(payload)
   await fetch(BASE_URL + `/loginform`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useStore } from 'react-context-hook'
+
+
 import { useImmer } from 'use-immer';
 import api from '@/api';
 import ChatMessages from '@/components/ChatMessages';
@@ -7,6 +10,7 @@ import ChatInput from '@/components/ChatInput';
 function Chatbot() {
   const [messages, setMessages] = useImmer([]);
   const [newMessage, setNewMessage] = useState('');
+  const [username, setUsername] = useStore("username")
 
   const isLoading = messages.length && messages[messages.length - 1].loading;
 
@@ -24,7 +28,7 @@ function Chatbot() {
     try {
 
       // Get the full response instead of a stream
-      const assistantMessage = await api.sendChatMessage(trimmedMessage);
+      const assistantMessage = await api.sendChatMessage(trimmedMessage, username);
 
       setMessages(draft => {
         draft[draft.length - 1].content = assistantMessage;  // Full response

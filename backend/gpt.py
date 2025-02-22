@@ -62,7 +62,7 @@ def calculate_cost(response):
     }
 
 # Main function for interacting with the chatbot LLM
-def chat_interaction(prompt, username="usuario_test"):
+def chat_interaction(prompt, username):
     data = generate_chatgpt_data(get_system_prompt(mongo_client.get_dict_usuario(username)),
         prompt, 0.2)
     
@@ -73,7 +73,7 @@ def chat_interaction(prompt, username="usuario_test"):
         # Añadir a la in-memory store el contexto general del chat
         append_context(username, prompt + response_json["respuesta"])
         # Añadir el contexto que la LLM piensa que es importante a MongoDB
-        mongo_client.update_important_context(response_json["contexto_importante"], username)
+        mongo_client.update_important_context(response_json["important_context"], username)
         return response_json["respuesta"]
     else:
         raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")
