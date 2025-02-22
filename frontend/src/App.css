@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
+
 /* Add background blur effect when login screen is visible */
 .blur-sm {
     filter: blur(5px);
   }
-  
+
   /* Overlay login screen styles */
   .login-overlay {
     position: fixed;
@@ -10,7 +12,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    background: rgb(229, 208, 172, 0.6); /* Semi-transparent background */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,7 +21,7 @@
   
   /* Login container style */
   .login-container {
-    background: white;
+    background: rgb(229, 208, 172);
     border-radius: 10px;
     padding: 2rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -27,8 +29,15 @@
     max-width: 400px;
     text-align: center;
   }
-  
-  /* Input fields style */
+  input.middle:focus {
+    outline-width: 0;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus {
+      outline: none;
+  }
   .input-field {
     width: 100%;
     padding: 1rem;
@@ -36,13 +45,21 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1rem;
+    outline: none; /* Removes default blue outline */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .input-field:focus {
+    border-color: inherit; /* Prevents color change on focus */
+    border-color: rgb(255, 157, 35); /* Your primary orange */
+    box-shadow: 0 0 5px rgba(255, 157, 35, 0.5); /* Optional glow effect */
   }
   
   /* Login button style */
   .login-button {
     width: 100%;
     padding: 1rem;
-    background-color: #007BFF;
+    background-color: rgb(255, 157, 35);
     color: white;
     border: none;
     border-radius: 5px;
@@ -52,20 +69,20 @@
   }
   
   .login-button:hover {
-    background-color: #0056b3;
+    background-color: rgb(193, 70, 0);
   }
   
 
-  /* Styling del form */
+/* Styling del form */
 
-  /* Main overlay style */
+/* Main overlay style */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  background: rgb(229, 208, 172, 0.6); /* Semi-transparent background */
   backdrop-filter: blur(5px); /* Blurring the background */
   display: flex;
   justify-content: center;
@@ -75,7 +92,7 @@
 
 /* Form container styling */
 .form-container {
-  background: white;
+  background: rgb(254, 249, 225);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
@@ -95,7 +112,7 @@ label {
 /* Button styles */
 button {
   padding: 10px 20px;
-  background-color: #3498db;
+  background-color: rgb(255, 157, 35);
   color: white;
   border: none;
   border-radius: 5px;
@@ -105,14 +122,37 @@ button {
 }
 
 button:hover {
-  background-color: #2980b9;
+  background-color: rgb(193, 70, 0);
 }
 
 /* Close button styling */
 .close-button {
   background-color: transparent;
-  color: #3498db;
+  color: rgb(255, 157, 35);
   font-size: 1.2rem;
   margin-top: 10px;
   cursor: pointer;
 }
+
+.sour-gummy-100 {
+  font-family: "Sour Gummy", serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.sour-gummy-400 {
+  font-family: "Sour Gummy", serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+}
+
+
+.sour-gummy-700 {
+  font-family: "Sour Gummy", serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+}
+

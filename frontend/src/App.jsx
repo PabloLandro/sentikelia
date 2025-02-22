@@ -4,13 +4,16 @@ import { withStore, useStore } from 'react-context-hook'
 
 
 import Chatbot from '@/components/Chatbot';
+import Diary from '@/components/Diary';
 import logo from '@/assets/images/logo.png';
+import diary_icon from '@/assets/images/diary.png';
 import api from '@/api';
 import './App.css'; // Include the CSS file for styling
 
 function App() {
   const [isLoginVisible, setIsLoginVisible] = useState(true); // Track visibility of login screen
   const [isFormVisible, setIsFormVisible] = useState(false)
+  const [isDiaryVisible, setIsDiaryVisible] = useState(false)
   const [username, setUsername] = useStore("username")
 
   const [formData, setFormData] = React.useState({
@@ -39,7 +42,6 @@ function App() {
     if (login) {
       setIsFormVisible(false)
     } else {
-      console.log("forming")
       setIsFormVisible(true)
     }
     setIsLoginVisible(false)
@@ -65,6 +67,9 @@ function App() {
     api.submitForm(username, data)
   };
 
+  const toggleDiary = () => {
+    setIsDiaryVisible((prevState) => !prevState)
+  }
 
   return (
     <div className="relative flex flex-col min-h-full w-full max-w-3xl mx-auto px-4">
@@ -76,7 +81,7 @@ function App() {
             alt="Logo"
             className="w-16 h-16"
           />
-          <h1 className="font-urbanist text-[2rem] font-semibold">SadGPT</h1>
+          <h1 className="sour-gummy-400 text-[2rem] font-semibold">SadGPT</h1>
         </div>
       </header>
 
@@ -89,7 +94,7 @@ function App() {
       {isLoginVisible && (
         <div className="login-overlay">
           <div className="login-container">
-            <h2 className="text-xl font-semibold">Entra a SadGPT 😊</h2>
+            <h2 className="text-xl font-semibold text-[2rem] sour-gummy-100">Entra a SadGPT 😊</h2>
             <form className="login-form" onSubmit={handleLogin}>
               <input
                 type="text"
@@ -190,6 +195,16 @@ function App() {
       </div>
       
       )}
+
+      {/* Diary */}
+
+      {isDiaryVisible && (
+        <Diary toggleDiary={toggleDiary}/>
+      )}
+
+      <button onClick={toggleDiary} className="absolute bottom-8 right-8 w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg">
+        <img src={diary_icon} alt="icon" className="w-8 h-8" />
+      </button>
 
     </div>
   );
