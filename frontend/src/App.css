@@ -179,7 +179,7 @@ button:hover {
 }
 */
 
-.diary-bg {
+.overlay-content {
   background-color: #fff;
   background-image:
   linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
