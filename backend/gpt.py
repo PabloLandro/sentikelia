@@ -6,26 +6,40 @@ from mongo_client import mongo_client
 
 # Get api key from .env
 load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
-api_url = "https://api.openai.com/v1/chat/completions"
+API_KEY = os.getenv("OPENAI_API_KEY")
+API_URL = "https://api.openai.com/v1/chat/completions"
 
-model = "gpt-4o-mini"
-max_tokens = 1000
+GPT_MODEL = "gpt-4o-mini"
+MAX_TOKENS = 1000
 
 # Set up headers including the authorization token
-headers = {
+REQUEST_HEADER = {
     "Content-Type": "application/json",
-    "Authorization": f"Bearer {api_key}",
+    "Authorization": f"Bearer {API_KEY}",
 }
 
-payload = {
-    "model": model,
-    "max_tokens": max_tokens,
-    "n": 1,
-    "stop": None,
-    "temperature": 0.7,
-    "messages": None,
-}
+# Not used right now
+# payload = {
+#     "model": GPT_MODEL,
+#     "max_tokens": MAX_TOKENS,
+#     "n": 1,
+#     "stop": None,
+#     "temperature": 0.7,
+#     "messages": None,
+# }
+
+# Helper function for generating the JSON data for the LLM requests
+def generate_chatgpt_data(system_prompt, user_prompt, temp):
+    return {
+        "model": GPT_MODEL,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+
+            {"role": "user", "content": user_prompt}
+        ],
+        "max_tokens": MAX_TOKENS,
+        "temperature": temp
+    }
 
 # Calcular costos y ponerlos en un json
 def calculate_cost(response):
@@ -47,24 +61,12 @@ def calculate_cost(response):
         "total_cost": coste_total
     }
 
-def call_openai(prompt, username="usuario_test"):
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    data = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": get_system_prompt(mongo_client.get_dict_usuario(username))},
-
-            {"role": "user", "content": prompt}
-        ],
-        "max_tokens": 150,
-        "temperature": 0.2
-    }
-
-    response = requests.post(api_url, headers=headers, json=data)
+# Main function for interacting with the chatbot LLM
+def chat_interaction(prompt, username="usuario_test"):
+    data = generate_chatgpt_data(get_system_prompt(mongo_client.get_dict_usuario(username)),
+        prompt, 0.2)
+    
+    response = requests.post(API_URL, headers=REQUEST_HEADER, json=data)
     if response.status_code == 200:
         response_content = response.json()['choices'][0]['message']['content']
         response_json = json.loads(response_content) # esto puede fallar si la LLM se vuelve loca
@@ -76,20 +78,12 @@ def call_openai(prompt, username="usuario_test"):
     else:
         raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")
 
-# def generate_gpt_response(user_message):
-#     try:
-#         # Make the GPT API call to generate a response
-#         payload["messages"] = [{"role": "user", "content": user_message}]
-#         # Make a POST request to the API endpoint
-#         response = requests.post(api_url, headers=headers, json=payload)
-
-#         # Check if the request was successful
-#         if response.status_code == 200:
-#             response_content = response.json()['choices'][0]['message']['content']
-#             print(response_content)
-#             return response_content
-#         else:
-#             # Handle error responses
-#             raise Exception(f"Error: {response.status_code} - {response.text}")
-#     except Exception as e:
-#         return f"Error: {str(e)}"
+# Main function for summarizing and extracting insights from diary entries
+def generate_diary_summary(username, diary_entry):
+    data = generate_chatgpt_data(prompt_resumir_diario(diary_entry), diary_entry, 0.2)
+    response = requests.post(API_URL, headers=REQUEST_HEADER, json=data)
+    if response.status_code == 200:
+        response_content = response.json()['choices'][0]['message']['content']
+        return response_content
+    else:
+        raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")

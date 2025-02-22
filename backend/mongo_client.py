@@ -34,7 +34,11 @@ class MongoDBClient:
     def get_user(self, username):
         """Recupera el JSON principal de un usuario basado en su nombre de usuario.
         Si no existe devuelve None."""
-        return self.db["usuarios"].find_one({"username": username}, {"_id": 0})  # Exclude MongoDB _id field
+        try:
+            return self.db["usuarios"].find_one({"username": username}, {"_id": 0})  # Exclude MongoDB _id field
+        except Exception as e:
+            print(f"MongoDB Error: {e}")
+            return None
 
     def get_dict_usuario(self, username):
         """
@@ -75,7 +79,7 @@ class MongoDBClient:
         """Updates the 'important_context' field for a given user."""
         result = self.db["usuarios"].update_one(
             {"username": username},  # Find user by username
-            {"$set": {"contexto_importante": new_context}}  # Update or create the field
+            {"$set": {"important_context": new_context}}  # Update or create the field
         )
 
         if result.matched_count == 0:
@@ -99,26 +103,7 @@ class MongoDBClient:
             {"$push": {"entradas_diario": {"resumen": diary_entry["resumen"]}}}
         )
         return inserted_id
-
-    """Recupera las últimas N entradas de diario de un usuario."""
-    def get_last_diary_entries(self, username, N=5):
-        return list(self.db["entradas_diario"]
-                    .find({"usuario": username})
-                    .sort("_id", -1)
-                    .limit(N))
-
-
-    """Actualiza la importancia de una entrada de diario por su _id."""
-    def update_importancia(self, entrada_id, nueva_importancia):
-        return self.db["entradas_diario"].update_one(
-            {"_id": ObjectId(entrada_id)},
-            {"$set": {"importancia": nueva_importancia}}
-        ).modified_count
-
-    """Elimina una entrada de diario por su _id."""
-    def delete_entrada_diario(self, entrada_id):
-        return self.db["entradas_diario"].delete_one({"_id": ObjectId(entrada_id)}).deleted_count
-
+    
     def close(self):
         """Cierra la conexión con MongoDB."""
         if self.client:

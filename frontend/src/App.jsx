@@ -8,43 +8,56 @@ function App() {
   const [isLoginVisible, setIsLoginVisible] = useState(true); // Track visibility of login screen
   const [isFormVisible, setIsFormVisible] = useState(false)
   const [username, setUsername] = useState("")
+
+  const [formData, setFormData] = React.useState({
+    age: "",
+    mood: "",
+    important_context: "",
+    chat_tone: "formal", // default value
+  });
+
   const [personalityTraits, setPersonalityTraits] = useState({
-    introverted: false,
-    extroverted: false,
-    analytical: false,
-    creative: false,
-    empathetic: false,
-    organized: false,
+    introvertido: false,
+    extrovertido: false,
+    analítico: false,
+    creativo: false,
+    empático: false,
+    organizado: false,
   });
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    let login = api.login(username)
+    let login = await api.login(username)
     if (login) {
       setIsFormVisible(false)
     } else {
+      console.log("forming")
       setIsFormVisible(true)
     }
     setIsLoginVisible(false)
 
   };
 
-  const handleCheckboxChange = (event) => {
-    const { name, checked } = event.target;
-    setPersonalityTraits((prevState) => ({
-      ...prevState,
-      [name]: checked,
-    }));
-  };
+  // Handlers for input changes
+  function handleInputChange(e) {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  }
+
+  function handleCheckboxChange(e) {
+    const { name, checked } = e.target;
+    setPersonalityTraits({ ...personalityTraits, [name]: checked });
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("User's personality traits:", personalityTraits);
     setIsFormVisible(false); // Hide the form after submission
+    api.submitForm(username, personalityTraits)
   };
 
 
@@ -52,7 +65,12 @@ function App() {
     <div className="relative flex flex-col min-h-full w-full max-w-3xl mx-auto px-4">
       {/* Header Section */}
       <header className="sticky top-0 shrink-0 z-20 bg-white">
-        <div className="flex flex-col h-full w-full gap-1 pt-4 pb-2">
+        <div className="flex flex-row items-center h-full w-full gap-4 pt-4 pb-2">
+          <img
+            src={logo}
+            alt="Logo"
+            className="w-16 h-16"
+          />
           <h1 className="font-urbanist text-[2rem] font-semibold">SadGPT</h1>
         </div>
       </header>
@@ -84,75 +102,88 @@ function App() {
       {/* Overlay form */}
       {isFormVisible && (
         <div className="overlay">
-          <div className="form-container">
-            <h2>Tell us about your personality</h2>
-            <form onSubmit={handleSubmit} className="personality-form">
-              <label>
-                <input
-                  type="checkbox"
-                  name="introverted"
-                  checked={personalityTraits.introverted}
-                  onChange={handleCheckboxChange}
-                />
-                Introverted
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="extroverted"
-                  checked={personalityTraits.extroverted}
-                  onChange={handleCheckboxChange}
-                />
-                Extroverted
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="analytical"
-                  checked={personalityTraits.analytical}
-                  onChange={handleCheckboxChange}
-                />
-                Analytical
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="creative"
-                  checked={personalityTraits.creative}
-                  onChange={handleCheckboxChange}
-                />
-                Creative
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="empathetic"
-                  checked={personalityTraits.empathetic}
-                  onChange={handleCheckboxChange}
-                />
-                Empathetic
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="organized"
-                  checked={personalityTraits.organized}
-                  onChange={handleCheckboxChange}
-                />
-                Organized
-              </label>
-              <button type="submit" className="submit-button">
-                Submit
-              </button>
-            </form>
-            <button
-              onClick={() => setIsFormVisible(false)}
-              className="close-button"
-            >
-              Close
+        <div className="form-container">
+          <h2>Bienvenido {username}, cuéntanos más sobre ti</h2>
+          <form onSubmit={handleSubmit} className="personality-form">
+            {/* Age Field */}
+            <label>
+              Edad:
+              <input
+                type="number"
+                name="age"
+                value={formData.age}
+                onChange={handleInputChange}
+                className="input-field"
+                required
+              />
+            </label>
+      
+            {/* Mood Field */}
+            <label>
+              ¿Cómo te sientes?:
+              <input
+                type="text"
+                name="mood"
+                value={formData.mood}
+                onChange={handleInputChange}
+                className="input-field"
+                placeholder="e.g., Contento, cansado, motivado"
+              />
+            </label>
+      
+            {/* Important Context Field */}
+            <label>
+              Contexto Importante:
+              <textarea
+                name="important_context"
+                value={formData.important_context}
+                onChange={handleInputChange}
+                className="textarea-field"
+                placeholder="Cuéntanos algo importante sobre ti"
+              />
+            </label>
+      
+            {/* Chat Tone Dropdown */}
+            <label>
+              Tono de Chat:
+              <select
+                name="chat_tone"
+                value={formData.chat_tone}
+                onChange={handleInputChange}
+                className="dropdown-field"
+              >
+                <option value="0">Neutral</option>
+                <option value="1">Motivacional</option>
+                <option value="2">Tranquilizador</option>
+                <option value="3">Directo</option>
+                <option value="4">Amigo pirata</option>
+              </select>
+            </label>
+      
+            {/* Characteristics (Checkboxes) */}
+            <fieldset>
+              <legend>Características:</legend>
+              {Object.keys(personalityTraits).map((trait) => (
+                <label key={trait}>
+                  <input
+                    type="checkbox"
+                    name={trait}
+                    checked={personalityTraits[trait]}
+                    onChange={handleCheckboxChange}
+                  />
+                  {trait.charAt(0).toUpperCase() + trait.slice(1)}
+                </label>
+              ))}
+            </fieldset>
+      
+            {/* Submit Button */}
+            <button type="submit" className="submit-button">
+              Enviar
             </button>
-          </div>
+          </form>
         </div>
+      </div>
+      
       )}
 
     </div>

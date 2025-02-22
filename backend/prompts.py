@@ -7,10 +7,10 @@ def get_system_prompt(dict_usuario, contexto_chat=""):
     Tienes acceso al historial emocional del usuario a partir de su diario personal y puedes adaptar tu tono de conversación según sus preferencias.
 
     ### Contexto del Usuario:
-    - **Última entrada en el diario**: {dict_usuario["última_entrada_diario"]}
-    - **Contexto importante**: {dict_usuario["contexto_importante"]}
+    - **Última entrada en el diario**: 
+    - **Contexto importante**: {dict_usuario["important_context"]}
     - **Tonalidad deseada**: La preferencia actual del usuario para la tonalidad de la respuesta es la siguiente. Tu respuesta debería seguir este estilo:
-    {tonalidad_chatbot(dict_usuario["tono_usuario"])}
+    {tonalidad_chatbot(dict_usuario["chat_tone"])}
     - Contexto del chat:
     {contexto_chat}
 
@@ -41,7 +41,9 @@ def tonalidad_chatbot(id_tonalidad):
         0: "Por defecto: Un tono neutral, cálido y equilibrado.",
         1: "Motivacional: Un tono motivacional, lleno de energía y palabras de aliento.",
         2: "Tranquilizador: Un tono tranquilizador, calmado y sereno, transmitiendo paz y seguridad.",
-        3: "Directo: Un tono directo, conciso y sin rodeos, pero manteniendo empatía."
+        3: "Directo: Un tono directo, conciso y sin rodeos, pero manteniendo empatía.",
+        4: "Amigo pirata: El usuario quiere un amigo que sea un trepidante corsario, eso le da seguridad en sí mismo,"
+        "así que háblale como si fueras un verdadero bucanero usando expresiones como yarrrghhh y ahoyyy"
     }
     return tonalidades.get(id_tonalidad, "Un tono neutral, cálido y equilibrado.")
 
