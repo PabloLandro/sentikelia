@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
 @import url("https://db.onlinewebfonts.com/c/dd97c93d1184d223b93c9042b7e57980?family=Stratos+Web");
-
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 /* Add background blur effect when login screen is visible */
 body {
   font-family: "Stratos Web", sans-serif;
@@ -139,25 +139,9 @@ button:hover {
   cursor: pointer;
 }
 
-.sour-gummy-100 {
-  font-family: "Sour Gummy", serif;
-  font-optical-sizing: auto;
-  font-weight: 100;
-  font-style: normal;
-}
-
-.sour-gummy-400 {
-  font-family: "Sour Gummy", serif;
-  font-optical-sizing: auto;
-  font-weight: 100;
-  font-style: normal;
-}
-
-
-.sour-gummy-700 {
-  font-family: "Sour Gummy", serif;
-  font-optical-sizing: auto;
-  font-weight: 100;
+.title-text {
+  font-family: "Montserrat Alternates", serif;
+  font-weight: 400;
   font-style: normal;
 }
 
@@ -179,10 +163,14 @@ button:hover {
 }
 */
 
-.overlay-content {
+.diary-bg {
   background-color: #fff;
   background-image:
-  linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
+  linear-gradient(90deg, transparent 10px, #abced4 10px, #abced4 12px, transparent 12px),
   linear-gradient(#eee .1em, transparent .1em);
   background-size: 100% 1.2em;
+}
+
+.fix-weight {
+  font-weight: 400;
 }

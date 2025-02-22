@@ -26,6 +26,7 @@ function ChatInput({ newMessage, isLoading, setNewMessage, submitNewMessage }) {
       return
     }
     const fetchTone = async () => {
+      console.log(username)
       let tone = await api.getTone(username)
       setSelectedTone(tone)
     };
@@ -46,7 +47,7 @@ function ChatInput({ newMessage, isLoading, setNewMessage, submitNewMessage }) {
   
   return(
     <div className='sticky bottom-0 bg-white py-4'>
-      <div className='p-1.5 bg-primary-blue/35 rounded-3xl z-50 font-mono origin-bottom animate-chat duration-400'>
+      <div className='p-1.5 bg-primary-blue/35 rounded-3xl z-50 origin-bottom animate-chat duration-400'>
         <div className='flex items-center relative bg-white rounded-3xl overflow-hidden ring-primary-blue ring-1 focus-within:ring-2 transition-all'>
           {/* Dropdown for chatbot personality */}
           <select

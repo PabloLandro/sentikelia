@@ -1,8 +1,6 @@
 from pydantic import BaseModel
 from typing import List
 
-# | None = None significa que es opcional
-
 # Modelos de la base de datos y endpoints de API
 class RequestWithUsername(BaseModel):
     username: str
@@ -40,3 +38,7 @@ class UserData(BaseModel):
 class ToneChangeRequest(BaseModel):
     username: str
     new_tone: int
+
+class PersonalityChangeRequest(BaseModel):
+    username: str
+    input: str

@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uuid
 from gpt import chat_interaction, generate_diary_summary
+from analisis_sentimental import classify_enneagram, classify_big5
 from mongo_client import mongo_client
 from datetime import date
 from model import *
@@ -93,3 +94,12 @@ async def update_tone(tone_req: ToneChangeRequest):
         return JSONResponse(content={"message": "true"})
     else:
         return JSONResponse(content={"message": "false"})
+
+@app.post("/personality")
+async def update_personality(personality_req: PersonalityChangeRequest):
+    user = mongo_client.get_user(personality_req.username)
+    if user is not None:
+        enneagram_result = classify_enneagram(personality_req.input)
+        big5_result = classify_big5(personality_req.input)
+        return JSONResponse(content={"message": "true", "enneagram_result": enneagram_result, "big5_result": big5_result})
+    return JSONResponse(content={"message": "false"})

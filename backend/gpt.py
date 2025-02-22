@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 import os, json, requests
 from prompts import *
-from context_manager import *
 from mongo_client import mongo_client
 from model import ChatRequest, ChatEntry
 

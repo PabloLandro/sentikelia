@@ -92,6 +92,25 @@ async function setTone(username, tone) {
   })
 }
 
+async function updatePersonality(username, input) {
+  const payload = {
+    username: username,
+    input: input
+  };
+  const res = await fetch(BASE_URL + `/personality`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    mode: "cors"
+  });
+  const data = await res.json();
+  return {
+    success: data.message === "true",
+    enneagram_result: data.enneagram_result,
+    big5_result: data.big5_result
+  };
+}
+
 export default {
   sendChatMessage,
   login,
@@ -99,5 +118,6 @@ export default {
   addDiaryEntry,
   getDiaryEntries,
   getTone,
-  setTone
+  setTone,
+  updatePersonality
 };
