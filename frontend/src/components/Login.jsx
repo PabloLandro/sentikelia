@@ -40,7 +40,7 @@ function Login({ setIsFormVisible, setIsLoginVisible }) {
                   required
                   onChange={handleUsernameChange}
                 />
-                <button type="submit" className="login-button">Login</button>
+                <button type="submit" className="button-primary">Login</button>
               </form>
             </div>
           </div>

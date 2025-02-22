@@ -43,10 +43,9 @@ def classify_enneagram(texto):
     }
     return scores
 
-def classify_big5(diary_entries):
+def classify_big5(texto):
     tokenizer = AutoTokenizer.from_pretrained("Minej/bert-base-personality")
     model = AutoModelForSequenceClassification.from_pretrained("Minej/bert-base-personality")
-    texto = " ".join(entry.entry for entry in diary_entries)
     inputs = tokenizer(texto, return_tensors="pt", truncation=True, padding=True)
     personalidad = model(**inputs)
 
@@ -56,5 +55,7 @@ def classify_big5(diary_entries):
     probabilities = (logits - logits.min()) / (logits.max() - logits.min())  # Normalize to [0, 1]
 
     # Save Big 5 personality traits in a variable
+    probabilities = probabilities.astype(float)
     big5_traits = dict(zip(labels, probabilities))
+
     return big5_traits

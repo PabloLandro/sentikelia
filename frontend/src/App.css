@@ -1,84 +1,97 @@
 @import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
 @import url("https://db.onlinewebfonts.com/c/dd97c93d1184d223b93c9042b7e57980?family=Stratos+Web");
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* Define CSS variables for the color palette */
+:root {
+  --background-color: #FFFFFF; /* Pure white */
+  --highlight-color: #7882A8; /* Blue tone */
+  --intermediate-highlight-color: #505885; /* Intermediate blue tone */
+  --dark-color: #21264D; /* Dark blue */
+  --red-highlight-color: #FE4F51; /* Red highlight */
+  --highlight-color-transparent: rgba(120, 130, 168, 0.6); /* Semi-transparent blue */
+  --dark-color-transparent: rgba(33, 38, 77, 0.6); /* Semi-transparent dark blue */
+  --red-highlight-color-transparent: rgba(254, 79, 81, 0.6); /* Semi-transparent red */
+}
+
 /* Add background blur effect when login screen is visible */
 body {
   font-family: "Stratos Web", sans-serif;
+  background-color: var(--background-color); /* Use CSS variable */
 }
 
 .blur-sm {
-    filter: blur(5px);
-  }
+  filter: blur(5px);
+}
 
-  /* Overlay login screen styles */
-  .login-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgb(229, 208, 172, 0.6); /* Semi-transparent background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 50; /* Ensure it's above all content */
-  }
-  
-  /* Login container style */
-  .login-container {
-    background: rgb(229, 208, 172);
-    border-radius: 10px;
-    padding: 2rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-  }
-  input.middle:focus {
-    outline-width: 0;
-  }
-  input:focus,
-  select:focus,
-  textarea:focus,
-  button:focus {
-      outline: none;
-  }
-  .input-field {
-    width: 100%;
-    padding: 1rem;
-    margin: 0.5rem 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    outline: none; /* Removes default blue outline */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .input-field:focus {
-    border-color: inherit; /* Prevents color change on focus */
-    border-color: rgb(255, 157, 35); /* Your primary orange */
-    box-shadow: 0 0 5px rgba(255, 157, 35, 0.5); /* Optional glow effect */
-  }
-  
-  /* Login button style */
-  .login-button {
-    width: 100%;
-    padding: 1rem;
-    background-color: rgb(255, 157, 35);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 1rem;
-  }
-  
-  .login-button:hover {
-    background-color: rgb(193, 70, 0);
-  }
-  
+/* Overlay login screen styles */
+.login-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--highlight-color-transparent); /* Use CSS variable */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50; /* Ensure it's above all content */
+}
 
-/* Styling del form */
+/* Login container style */
+.login-container {
+  background: var(--highlight-color); /* Use CSS variable */
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+input.middle:focus {
+  outline-width: 0;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: none;
+}
+
+.input-field {
+  width: 100%;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--intermediate-highlight-color); /* Use CSS variable */
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none; /* Removes default blue outline */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: var(--intermediate-highlight-color); /* Use CSS variable */
+  box-shadow: 0 0 5px var(--highlight-color-transparent); /* Optional glow effect */
+}
+
+/* Login button style */
+.login-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--dark-color); /* Use CSS variable */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.login-button:hover {
+  background-color: var(--red-highlight-color); /* Use CSS variable */
+}
 
 /* Main overlay style */
 .overlay {
@@ -87,7 +100,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgb(229, 208, 172, 0.6); /* Semi-transparent background */
+  background: var(--highlight-color-transparent); /* Use CSS variable */
   backdrop-filter: blur(5px); /* Blurring the background */
   display: flex;
   justify-content: center;
@@ -97,7 +110,7 @@ body {
 
 /* Form container styling */
 .form-container {
-  background: rgb(254, 249, 225);
+  background: var(--background-color); /* Use CSS variable */
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
@@ -117,7 +130,7 @@ label {
 /* Button styles */
 button {
   padding: 10px 20px;
-  background-color: rgb(255, 157, 35);
+  background-color: var(--dark-color); /* Use CSS variable */
   color: white;
   border: none;
   border-radius: 5px;
@@ -126,14 +139,10 @@ button {
   margin-top: 20px;
 }
 
-button:hover {
-  background-color: rgb(193, 70, 0);
-}
-
 /* Close button styling */
 .close-button {
   background-color: transparent;
-  color: rgb(255, 157, 35);
+  color: var(--dark-color); /* Use CSS variable */
   font-size: 1.2rem;
   margin-top: 10px;
   cursor: pointer;
@@ -142,35 +151,104 @@ button:hover {
 .title-text {
   font-family: "Montserrat Alternates", serif;
   font-weight: 400;
-  font-style: normal;
 }
-
-/* body {
-  background: 
-    radial-gradient(circle, rgba(149, 70, 227, 0.2) 10%, transparent 11%),
-    radial-gradient(circle at bottom left, rgba(149, 70, 227, 0.1) 5%, transparent 6%),
-    radial-gradient(circle at bottom right, rgba(149, 70, 227, 0.1) 5%, transparent 6%),
-    radial-gradient(circle at top left, rgba(149, 70, 227, 0.1) 5%, transparent 6%),
-    radial-gradient(circle at top right, rgba(149, 70, 227, 0.1) 5%, transparent 6%);
-  background-size: 3em 3em;
-  background-color: rgba(255, 255, 255, 0.95);
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-*/
 
 .diary-bg {
-  background-color: #fff;
+  background-color: var(--background-color); /* Use CSS variable */
   background-image:
-  linear-gradient(90deg, transparent 10px, #abced4 10px, #abced4 12px, transparent 12px),
-  linear-gradient(#eee .1em, transparent .1em);
+    linear-gradient(90deg, transparent 10px, var(--highlight-color) 10px, var(--highlight-color) 12px, transparent 12px),
+    linear-gradient(#eee .1em, transparent .1em);
   background-size: 100% 1.2em;
 }
 
 .fix-weight {
   font-weight: 400;
+}
+
+/* Additional button styles */
+.button-primary {
+  background-color: var(--highlight-color); /* Use CSS variable */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-primary:hover {
+  background-color: var(--intermediate-highlight-color); /* Use CSS variable */
+}
+
+.button-secondary {
+  background-color: var(--dark-color); /* Use CSS variable */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-secondary:hover {
+  background-color: var(--red-highlight-color); /* Use CSS variable */
+}
+
+/* Additional input styles */
+.input-primary {
+  width: 100%;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--highlight-color); /* Use CSS variable */
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-primary:focus {
+  border-color: var(--intermediate-highlight-color); /* Use CSS variable */
+  box-shadow: 0 0 5px var(--highlight-color-transparent); /* Optional glow effect */
+}
+
+.input-secondary {
+  width: 100%;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--dark-color); /* Use CSS variable */
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-secondary:focus {
+  border-color: var(--red-highlight-color); /* Use CSS variable */
+  box-shadow: 0 0 5px var(--dark-color-transparent); /* Optional glow effect */
+}
+
+.link {
+  display: block;
+  width: 100%;
+  padding: 12px 20px; /* Internal spacing for comfortable clicking */
+  margin: 0; /* No margin between list items */
+  text-decoration: none;
+  font-family: "Montserrat Alternates", sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--dark-color);
+  background-color: transparent;
+  border-bottom: 1px solid rgba(254, 79, 81, 0); /* Invisible border */
+  transition: border-bottom-color 0.3s ease, background-color 0.3s ease;
+}
+
+.link:hover {
+  border-bottom-color: var(--highlight-color); /* Border appears on hover */
+}
+
+.link:focus,
+.link:active {
+  background-color: var(--highlight-color-transparent); /* Highlight background on active */
 }

@@ -92,9 +92,8 @@ async function setTone(username, tone) {
   })
 }
 
-async function updatePersonality(username, input) {
+async function updatePersonality(input) {
   const payload = {
-    username: username,
     input: input
   };
   const res = await fetch(BASE_URL + `/personality`, {
@@ -105,7 +104,6 @@ async function updatePersonality(username, input) {
   });
   const data = await res.json();
   return {
-    success: data.message === "true",
     enneagram_result: data.enneagram_result,
     big5_result: data.big5_result
   };

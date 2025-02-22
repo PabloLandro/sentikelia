@@ -40,5 +40,4 @@ class ToneChangeRequest(BaseModel):
     new_tone: int
 
 class PersonalityChangeRequest(BaseModel):
-    username: str
     input: str

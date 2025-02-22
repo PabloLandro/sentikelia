@@ -89,7 +89,6 @@ async def get_tone(username: str = Query(..., description="The username to fetch
 @app.post("/tone")
 async def update_tone(tone_req: ToneChangeRequest):
     user = mongo_client.get_user(tone_req.username)
-    print("UPDATE TONE ", tone_req.username, tone_req.new_tone)
     if user is not None and mongo_client.update_tone(tone_req):
         return JSONResponse(content={"message": "true"})
     else:
@@ -97,9 +96,7 @@ async def update_tone(tone_req: ToneChangeRequest):
 
 @app.post("/personality")
 async def update_personality(personality_req: PersonalityChangeRequest):
-    user = mongo_client.get_user(personality_req.username)
-    if user is not None:
-        enneagram_result = classify_enneagram(personality_req.input)
-        big5_result = classify_big5(personality_req.input)
-        return JSONResponse(content={"message": "true", "enneagram_result": enneagram_result, "big5_result": big5_result})
-    return JSONResponse(content={"message": "false"})
+    text = personality_req.input
+    enneagram_result = classify_enneagram(text)
+    big5_result = classify_big5(text)
+    return JSONResponse(content={"enneagram_result": enneagram_result, "big5_result": big5_result})

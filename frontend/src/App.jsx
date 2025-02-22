@@ -12,8 +12,6 @@ import './App.css'; // Include the CSS file for styling
 function App() {
   const [isLoginVisible, setIsLoginVisible] = useState(false); // Track visibility of login screen
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState(0); // Track active tab
-
 
   return (
     <Router>
@@ -41,34 +39,34 @@ function App() {
           )}
 
           {/* Tabs */}
-          <div className={`tabs ${(isLoginVisible || isFormVisible) ? 'blur-sm' : ''} flex`}>
+          <div className={`tabs ${(isLoginVisible || isFormVisible) ? 'blur-sm' : ''} flex w-full`}>
             {/* Sidebar Navigation */}
             <nav className="w-1/4 min-w-[200px] bg-gray-100 h-screen shadow-md">
               <ul className="flex flex-col items-start p-4">
-                <li className="mb-4">
-                  <Link
-                    to="/personality"
-                    className="text-blue-500 hover:text-blue-700"
-                  >
-                    Personality
-                  </Link>
-                </li>
-                <li className="mb-4">
-                  <Link
-                    to="/"
-                    className="text-blue-500 hover:text-blue-700"
-                  >
-                    Chatbot
-                  </Link>
-                </li>
-                <li className="mb-4">
-                  <Link
-                    to="/diary"
-                    className="text-blue-500 hover:text-blue-700"
-                  >
-                    Diary
-                  </Link>
-                </li>
+                  <li className="mb-4">
+                    <Link
+                      to="/personality"
+                      className="link"
+                    >
+                      Personality
+                    </Link>
+                  </li>
+                  <li className="mb-4">
+                    <Link
+                      to="/"
+                      className="link"
+                    >
+                      Chatbot
+                    </Link>
+                  </li>
+                  <li className="mb-4">
+                    <Link
+                      to="/diary"
+                      className="link"
+                    >
+                      Diary
+                    </Link>
+                  </li>
               </ul>
             </nav>
 
@@ -76,9 +74,9 @@ function App() {
             <div className="flex-grow p-6">
               {/* Define Routes */}
               <Routes>
-                <Route path="/personality" element={<Personality />} />
-                <Route path="/diary" element={<Diary />} />
                 <Route path="/" element={<Chatbot />} />
+                <Route path="/diary" element={<Diary />} />
+                <Route path="/personality" element={<Personality />} />
               </Routes>
             </div>
           </div>

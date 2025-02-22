@@ -72,7 +72,7 @@ function ChatInput({ newMessage, isLoading, setNewMessage, submitNewMessage }) {
           />
           {/* Send button */}
           <button
-            className='absolute top-1/2 -translate-y-1/2 right-3 p-1 rounded-md hover:bg-primary-blue/20'
+            className='absolute top-1/2 -translate-y-1/2 right-3 p-1 rounded-md'
             onClick={submitNewMessage}
           >
             <img src={sendIcon} alt='send' />

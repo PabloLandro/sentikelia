@@ -63,49 +63,51 @@ function Diary() {
 
 
   return (
-  <div className="">
-    <h2 className="text-2xl font-bold mb-6 text-center title-text">Tu diario personal</h2>
-    <div className="flex flex-col items-center mb-4">
-      <Calendar
-        onChange={handleDateChange}
-        value={selectedDate}
-        className="mb-2 border rounded-lg" // smaller calendar
-      />
-      <p className="text-xs text-gray-600 italic mt-3">
-        View past entries (read-only).
-      </p>
+    <div className="min-h-screen flex flex-col h-full w-full">
+      <h2 className="text-2xl font-bold py-4 text-left title-text">Tu diario personal</h2>
+      
+      <div className="flex gap-6">
+        {/* Left side - Textarea */}
+        <div className="flex-grow">
+          <textarea
+            placeholder={
+              selectedDate.toDateString() === today.toDateString()
+                ? "¿Cómo te ha ido hoy?"
+                : "No hay entradas para este día"
+            }
+            value={todayText}
+            onChange={handleTextChange}
+            className="w-full h-full p-4 pl-5 border rounded-lg diary-bg placeholder-gray-500 resize-none"
+            disabled={selectedDate.toDateString() !== today.toDateString()}
+          />
+          <div className="flex justify-end mt-4">
+            <button
+              onClick={saveEntry}
+              className={`px-4 py-2 rounded-lg ${
+                selectedDate.toDateString() === today.toDateString()
+                  ? "button-primary"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+              disabled={selectedDate.toDateString() !== today.toDateString()}
+            >
+              Escribir
+            </button>
+          </div>
+        </div>
+
+        {/* Right side - Calendar */}
+        <div className="w-64">
+          <Calendar
+            onChange={handleDateChange}
+            value={selectedDate}
+            className="border rounded-lg w-full"
+          />
+          <p className="text-xs text-gray-600 italic mt-3 text-center">
+            Ver entradas de diario pasado (solo lectura).
+          </p>
+        </div>
+      </div>
     </div>
-    <textarea
-      placeholder={
-        selectedDate.toDateString() === today.toDateString()
-          ? "¿Cómo te ha ido hoy?"
-          : "No hay entradas para este día"
-      }
-      value={todayText}
-      onChange={handleTextChange}
-      className="flex-grow w-full p-4 border rounded-md diary-bg placeholder-gray-500 resize-none"
-      disabled={selectedDate.toDateString() !== today.toDateString()}
-    />
-    <div className="flex justify-end mt-4">
-      <button
-        onClick={saveEntry}
-        className={`px-4 py-2 rounded-lg mr-2 ${
-          selectedDate.toDateString() === today.toDateString()
-            ? "bg-blue-500 text-white hover:bg-blue-600"
-            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-        }`}
-        disabled={selectedDate.toDateString() !== today.toDateString()}
-      >
-        Escribir
-      </button>
-      <button
-        onClick={closeDiary}
-        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-      >
-        Cerrar
-      </button>
-    </div>
-  </div>
 
   );
 }
