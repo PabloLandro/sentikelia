@@ -67,7 +67,7 @@ function Diary() {
 
 
   return (
-    <div className="min-h-screen flex flex-col h-full w-full">
+    <div className="flex flex-col h-full w-full">
       <h2 className="text-2xl font-bold py-4 text-left title-text">Tu diario personal</h2>
       
       <div className="flex gap-6">

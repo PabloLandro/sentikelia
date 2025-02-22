@@ -246,16 +246,16 @@ button {
 }
 
 .link:hover {
-  border-bottom-color: var(--highlight-color); /* Border appears on hover */
+  border-bottom-color: var(--red-highlight-color); /* Border appears on hover */
 }
 
 .link:focus,
 .link:active {
-  background-color: var(--highlight-color-transparent); /* Highlight background on active */
+  background-color: var(--red-highlight-color-transparent); /* Highlight background on active */
 }
 
 .highlight-bg {
-  background-color: var(--highlight-color);
+  background-color: var(--red-highlight-color);
 }
 
 .header-bg {

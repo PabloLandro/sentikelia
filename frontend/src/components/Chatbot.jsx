@@ -44,7 +44,7 @@ function Chatbot() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col h-full w-full">
+    <div className=" flex flex-col w-full" style={{ height: "100%" }}>
       {messages.length === 0 && (
         <div className='mt-3 cursive-font text-xl font-light space-y-2'>
           <p>¡Hola <span style={{ fontWeight: "bold" }}>{username}</span>! Bienvenido a <span className="title-text">sentikelia</span>.</p>

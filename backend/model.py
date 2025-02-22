@@ -40,4 +40,9 @@ class ToneChangeRequest(BaseModel):
     new_tone: int
 
 class PersonalityChangeRequest(BaseModel):
-    input: str
+    username: str
+
+class PersonalityExplanationRequest(BaseModel):
+    username: str
+    explanation_big5: dict
+    explanation_ennegram: dict

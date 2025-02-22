@@ -27,6 +27,24 @@ async function login(username) {
   return out == "true";
 }
 
+async function getPersonalityExplanations(username, personality_big5, personality_enneagram) {
+  const payload = {
+    username: username,
+    personality_big5: personality_big5,
+    personality_enneagram: personality_enneagram
+  };
+
+  const res = await fetch(BASE_URL + `/personality/explanation`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    mode: "cors"
+  });
+
+  const data = await res.json();
+  return data;
+}
+
 async function submitForm(username, data){
   let payload={}
   payload["username"] = username
@@ -94,10 +112,10 @@ async function setTone(username, tone) {
   })
 }
 
-async function updatePersonality(input) {
-  const payload = {
-    input: input
-  };
+async function updatePersonality(username) {
+  const payload = {}
+  payload["username"] = username
+  console.log(payload)
   const res = await fetch(BASE_URL + `/personality`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -120,4 +138,4 @@ export default {
   getTone,
   setTone,
   updatePersonality
-};
+}

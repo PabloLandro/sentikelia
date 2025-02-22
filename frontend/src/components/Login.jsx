@@ -32,8 +32,9 @@ function Login({ setIsFormVisible, setIsLoginVisible }) {
 
     return (
         <div className="login-overlay">
-            <div className="login-container" style={{ backgroundImage: `url(${Background})` }}>
-              <h2 style={{ color: "white" }} className="text-xl fix-weight">entra a <span className="title-text">sentikelia</span> 😊</h2>
+            <div className="login-container" style={{ backgroundImage: `url(${Background})`, 
+              backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}>
+              <h2 style={{ color: "white" }} className="text-2xl fix-weight">entra a <span className="title-text">sentikelia</span></h2>
               <form className="login-form" onSubmit={handleLogin}>
                 <input
                   type="text"

@@ -97,7 +97,27 @@ async def update_tone(tone_req: ToneChangeRequest):
 
 @app.post("/personality")
 async def update_personality(personality_req: PersonalityChangeRequest):
-    text = personality_req.input
+    username = personality_req.username
+    userData = mongo_client.get_dict_usuario(username)
+    important_context = userData.get('important_context', '')
+    mensajes_chat = userData.get('mensajes_chat', '')
+    diary = userData.get('diary', '')
+    user_messages = " ".join([msg['prompt'] for msg in mensajes_chat])
+    text = f"{important_context} {user_messages} {diary}"
+
     enneagram_result = classify_enneagram(text)
     big5_result = classify_big5(text)
+    # generar explicacoin llamando a llm
     return JSONResponse(content={"enneagram_result": enneagram_result, "big5_result": big5_result})
+
+@app.get("/personality/explanation")
+async def generate_big5_and_ennegram_explanation(personality_exp_req: PersonalityExplanationRequest):
+    username = personality_exp_req.username
+    userData = mongo_client.get_dict_usuario(username)
+    important_context = userData.get('important_context', '')
+    mensajes_chat = userData.get('mensajes_chat', '')
+    diary = userData.get('diary', '')
+    user_messages = " ".join([msg['prompt'] for msg in mensajes_chat])
+    text = f"{important_context} {user_messages} {diary}"
+    big5 = personality_exp_req.big5
+

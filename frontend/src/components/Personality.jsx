@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
 import api from '@/api';
+import { useStore } from "react-context-hook";
+
 
 // Subcomponent for the personality charts
 const PersonalityCharts = ({ personalityResults }) => {
@@ -130,16 +132,14 @@ const Personality = () => {
     const [personalityResults, setPersonalityResults] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    
-    // Sample context for testing
-    const sampleContext = "Me siento muy feliz y motivado hoy. He trabajado arduamente en mis proyectos y estoy viendo resultados positivos. Me gusta ayudar a otros y mantener todo organizado. A veces me preocupo por los detalles, pero intento mantener una actitud optimista.";
+    const [username, setUsername] = useStore("username")
 
     useEffect(() => {
         const analyzePersonality = async () => {
             try {
                 setIsLoading(true);
                 setError(null);
-                const results = await api.updatePersonality(sampleContext);
+                const results = await api.updatePersonality(username);
                 setPersonalityResults({
                     big5_result: results.big5_result,
                     enneagram_result: results.enneagram_result
@@ -159,11 +159,27 @@ const Personality = () => {
         analyzePersonality();
     }, []);
 
+    const [explanation_big5, setExplanation] = useState("");
+
+    useEffect(() => {
+      const fetchExplanation = async () => {
+        try {
+          const response = await api.getPersonalityExplanations(username, personalityResults.big5_result, personalityResults.enneagram_result);
+          setExplanation(response.explanation);
+        } catch (error) {
+          console.error("Error fetching explanation:", error);
+          setExplanation("No se pudo obtener la explicación. Por favor inténtelo de nuevo más tarde.");
+        }
+      };
+
+      fetchExplanation();
+    }, [username]);
+
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
-                <div className="text-xl">Cargando el análisis de personalidad...</div>
-            </div>
+          <div className="flex justify-center mt-6 min-h-screen">
+            <div className="text-2xl">Cargando el análisis de personalidad...</div>
+          </div>
         );
     }
 
@@ -213,7 +229,11 @@ const Personality = () => {
 
                     <section className="bg-white p-6 rounded-lg shadow mt-8">
                         <h2 className="text-xl font-semibold mb-4">Texto de ejemplo usado para análisis</h2>
-                        <p className="text-gray-700">{sampleContext}</p>
+                        <p className="text-gray-700">
+                          
+                              {explanation_big5}
+
+                        </p>
                     </section>
                 </div>
             )}
