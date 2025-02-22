@@ -14,9 +14,9 @@ export default {
     },
     extend: {
       colors: {
-        'primary-blue': 'rgb(146, 179, 202)',
-        'primary-orange': 'rgb(243, 195, 177)',
-        'main-text': 'rgb(0, 43, 49)',
+        'primary-blue': '#7882A8',
+        'primary-orange': '#FE4F51',
+        'main-text': '#21264D',
         'error-red': 'rgb(208, 69, 82)',
       },
       animation: {

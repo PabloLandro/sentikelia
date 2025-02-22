@@ -186,8 +186,7 @@ class MongoDBClient:
         elif result.modified_count == 0:
             return True  # No modification needed, but user exists
         return True  # Successfully updated
-
-
+    
     def close(self):
         """Cierra la conexión con MongoDB."""
         if self.client:

@@ -252,3 +252,17 @@ button {
 .link:active {
   background-color: var(--highlight-color-transparent); /* Highlight background on active */
 }
+
+.highlight-bg {
+  background-color: var(--highlight-color);
+}
+
+.header-bg {
+  background: radial-gradient(circle, var(--highlight-color-transparent) 10%, transparent 11%),
+    radial-gradient(circle at bottom left, var(--highlight-color-transparent) 5%, transparent 6%),
+    radial-gradient(circle at bottom right, var(--highlight-color-transparent) 5%, transparent 6%),
+    radial-gradient(circle at top left, var(--highlight-color-transparent) 5%, transparent 6%),
+    radial-gradient(circle at top right, var(--highlight-color-transparent) 5%, transparent 6%);
+  background-size: 2em 2em;
+  background-color: #ffffff;
+}

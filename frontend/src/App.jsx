@@ -17,14 +17,20 @@ function App() {
     <Router>
       <div className="relative flex flex-col">
         {/* Header Section */}
-        <header
-          className={`sticky top-0 shrink-0 z-20 bg-white ${(isLoginVisible || isFormVisible) ? 'blur-sm' : ''} shadow-md`}
-        >
-          <div className="flex flex-row items-center h-full w-full gap-4 p-4">
+        <header className={`sticky top-0 shrink-0 z-20 bg-white ${isLoginVisible || isFormVisible ? 'blur-sm' : ''} shadow-md header-bg`}>
+          <div className="flex flex-row items-center h-full w-full gap-4 p-4 relative">
             <img src={logo} alt="Logo" className="w-16 h-16" />
-            <h1 className="text-[2rem] title-text">sentikelia</h1>
+            <h1 className="text-[2rem] title-text" style={{backgroundColor: "white"}}>sentikelia</h1>
+            {/* GitHub Icon Container */}
+              <a className="absolute right-0 top-0 h-full aspect-square bg-[var(--highlight-color)] flex items-center justify-center" href="https://github.com/derivada/sadgpt" target="_blank" rel="noopener noreferrer">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" 
+                  alt="GitHub Logo" 
+                  className="w-8 h-8 invert brightness-0"
+                />
+              </a>
           </div>
         </header>
+
         <div className="relative flex flex-row min-h-screen w-full">
           
 
@@ -39,9 +45,9 @@ function App() {
           )}
 
           {/* Tabs */}
-          <div className={`tabs ${(isLoginVisible || isFormVisible) ? 'blur-sm' : ''} flex w-full`}>
+          <div className={`tabs h-full ${(isLoginVisible || isFormVisible) ? 'blur-sm' : ''} flex w-full`}>
             {/* Sidebar Navigation */}
-            <nav className="w-1/4 min-w-[200px] bg-gray-100 h-screen shadow-md">
+            <nav className="min-w-[200px] bg-gray-100 h-screen shadow-md" style={{ width: "300px", margin: "0"}}>
               <ul className="flex flex-col items-start p-4">
                   <li className="mb-4">
                     <Link

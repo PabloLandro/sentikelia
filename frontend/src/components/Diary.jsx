@@ -58,6 +58,7 @@ function Diary() {
       [selectedDate]: todayText
     });
     api.addDiaryEntry(username, todayText, formatDate(new Date))
+    // api.modifyImportantContext(username, todayText)
     closeDiary()
   };
 

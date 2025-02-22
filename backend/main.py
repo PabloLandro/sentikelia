@@ -65,6 +65,7 @@ async def new_diary_entry(diary_req: DiaryRequest):
     username = diary_req.username
     diary_entry = diary_req.entry
     diary_entry.summary = generate_diary_summary(username, diary_entry.entry)
+    diary_entry
     # TODO importance and other analysis of the diary contents
     if mongo_client.insert_diary_entry(username, diary_entry) is not None:
         return JSONResponse(content={"message" : "true"})

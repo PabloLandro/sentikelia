@@ -35,15 +35,24 @@ def get_system_prompt(user_data, number_last_diary_entry=5, id_chat=0):
     - **Últimas {number_last_diary_entry} entrada/s en el diario**: {get_N_last_diary_entries(user_data, number_last_diary_entry)}
     - **Características del usuario**: {", ".join(user_data['characteristics'])}
     - **Contexto importante (Biografia del usuario)**: {user_data['important_context']}
-    - **Tonalidad deseada**: La preferencia actual del usuario para la tonalidad de la respuesta es la siguiente. Tu respuesta debería seguir este estilo: {tonalidad_chatbot(user_data["chat_tone"])}
+    - **Tonalidad deseada**: Ignora la tonalidad de los anteriores mensajes, tu tonalidad debe ser estrictamente la siguiente: La preferencia actual del usuario para la tonalidad de la respuesta es la siguiente. Tu respuesta debería seguir este estilo: {tonalidad_chatbot(user_data["chat_tone"])}
     
+   
+
     ### Contexto del chat {id_chat}:
     {print_chat_messages(user_data)}
+
+     ### Funcionalidad:
+
+    - Deberias llevar las riendas de la conversación y guiar al usuario a traves de sus emociones si conviene. Si no tienes informacion previa sobre el chat actual,
+    puedes empezar la conversacion con la informacion que tienes en el contexto especifico del usuario mencionado arriba.
+
+
 
     ### Instrucciones e información adicional:
     - Responde de forma **empática y adaptada** a la emoción actual del usuario.
     - Si el usuario expresa emociones negativas, ofrécele apoyo y sugerencias basadas en su historial emocional.
-    - Si el usuario ha mostrado progreso en sus entradas del diario, anímalo a seguir así.
+    - Si el usuario ha mostrado progreso en sus entradas del diario, anímalo a seguir así. 
     - Respeta siempre la tonalidad seleccionada por el usuario.
     - Mantén respuestas concisas pero significativas.
     - Analiza la información dada por el usuario para guardarla en el json de respuestas.
@@ -57,7 +66,7 @@ def get_system_prompt(user_data, number_last_diary_entry=5, id_chat=0):
         "new_mood": "Tan solo si el usuario acaba de cambiar mucho su mood después de la nueva interacción, describe su nuevo estado de ánimo para que podamos actualizarlo."
     }}
     '''
-
+    #print(prompt_chat)
     return prompt_chat
 
 def get_coach_prompt(user_data, number_last_diary_entry=5, id_chat=0):
@@ -135,3 +144,27 @@ def prompt_resumir_diario(diario_full):
     """
 
     return prompt_resumen
+
+def create_new_important_context_from_diary(user_data, new_context):
+    prompt = '''
+    Dada una información de entrada del diario del usuario, debes devolver la siguiente variable:
+
+    ### Input:
+    - Te vamos a dar dos variables:
+    - **important_context**, y **new_diary_entry**.
+
+    ### Output:
+    - A partir del important context y la nueva entrada del diario, debes devolver un nuevo important context actualizado con la informacion mas impo. 
+    Debes indentificar la información relevante de la entrada del diario y añadirla al important context.
+
+    ### Ejemplo:
+    - **important_context**: "El usuario es un estudiante de 20 años que está lidiando con la presión académica."
+    - **new_diary_entry**: "Hoy me sentí muy estresado por los exámenes finales y no pude dormir bien."
+
+    ### Output: 
+
+
+
+'''
+    user_data['important_context'] = new_context
+    return user_data

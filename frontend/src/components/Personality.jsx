@@ -7,23 +7,23 @@ const PersonalityCharts = ({ personalityResults }) => {
   // Transform Big Five data for RadarChart
   const big5Data = [
     {
-      trait: "Openness",
+      trait: "Apertura",
       value: personalityResults.big5_result.Openness * 100
     },
     {
-      trait: "Conscientiousness",
+      trait: "Conciencia",
       value: personalityResults.big5_result.Conscientiousness * 100
     },
     {
-      trait: "Extraversion",
+      trait: "Extraversión",
       value: personalityResults.big5_result.Extraversion * 100
     },
     {
-      trait: "Agreeableness",
+      trait: "Amabilidad",
       value: personalityResults.big5_result.Agreeableness * 100
     },
     {
-      trait: "Neuroticism",
+      trait: "Neuroticismo",
       value: personalityResults.big5_result.Neuroticism * 100
     }
   ];
@@ -46,9 +46,9 @@ const PersonalityCharts = ({ personalityResults }) => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-8 w-full">
+    <div className="flex flex-row items-center gap-8 w-full">
       <div className="w-full max-w-2xl">
-        <h3 className="text-xl font-bold mb-4 text-center">Big Five Personality Traits</h3>
+        <h3 className="text-xl font-bold mb-4 text-center">Rasgos Big Five</h3>
         <div className="h-96">
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart data={big5Data}>
@@ -68,7 +68,7 @@ const PersonalityCharts = ({ personalityResults }) => {
       </div>
 
       <div className="w-full max-w-2xl">
-        <h3 className="text-xl font-bold mb-4 text-center">Enneagram Profile</h3>
+        <h3 className="text-xl font-bold mb-4 text-center">Perfil Eneagrama</h3>
         <div className="relative h-96">
           <svg width="400" height="400" className="mx-auto">
             {/* Draw connecting lines */}
@@ -144,13 +144,13 @@ const Personality = () => {
                     big5_result: results.big5_result,
                     enneagram_result: results.enneagram_result
                 });
-                console.log("Personality Analysis Results:", {
+                console.log("Análisis de resultados de personalidad:", {
                     big5_result: results.big5_result,
                     enneagram_result: results.enneagram_result
                 });
             } catch (error) {
-                console.error("Error analyzing personality:", error);
-                setError("Error analyzing personality. Please try again later.");
+                console.error("Error analizando la personalidad:", error);
+                setError("Error analizando la personalidad. Por favor inténtelo de nuevo más tarde.");
             } finally {
                 setIsLoading(false);
             }
@@ -162,7 +162,7 @@ const Personality = () => {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <div className="text-xl">Loading personality analysis...</div>
+                <div className="text-xl">Cargando el análisis de personalidad...</div>
             </div>
         );
     }
@@ -187,7 +187,7 @@ const Personality = () => {
                     {/* Detailed Results */}
                     <div className="grid md:grid-cols-2 gap-8">
                         <section className="bg-white p-6 rounded-lg shadow">
-                            <h2 className="text-xl font-semibold mb-4">Big Five Results</h2>
+                            <h2 className="text-xl font-semibold mb-4">Resultados Big Five</h2>
                             <div className="space-y-2">
                                 {Object.entries(personalityResults.big5_result).map(([trait, score]) => (
                                     <div key={trait} className="flex justify-between items-center">
@@ -199,7 +199,7 @@ const Personality = () => {
                         </section>
                         
                         <section className="bg-white p-6 rounded-lg shadow">
-                            <h2 className="text-xl font-semibold mb-4">Enneagram Results</h2>
+                            <h2 className="text-xl font-semibold mb-4">Resultados Eneagrama</h2>
                             <div className="space-y-2">
                                 {Object.entries(personalityResults.enneagram_result).map(([type, score]) => (
                                     <div key={type} className="flex justify-between items-center">
@@ -212,7 +212,7 @@ const Personality = () => {
                     </div>
 
                     <section className="bg-white p-6 rounded-lg shadow mt-8">
-                        <h2 className="text-xl font-semibold mb-4">Sample Text Used for Analysis</h2>
+                        <h2 className="text-xl font-semibold mb-4">Texto de ejemplo usado para análisis</h2>
                         <p className="text-gray-700">{sampleContext}</p>
                     </section>
                 </div>

@@ -57,6 +57,8 @@ async function addDiaryEntry(username, diaryEntry, date) {
   return
 }
 
+
+
 async function getDiaryEntries(username) {
   const res = await fetch(BASE_URL + `/diary?username=${encodeURIComponent(username)}`, {
     method: "GET",
