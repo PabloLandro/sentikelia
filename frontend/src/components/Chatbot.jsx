@@ -45,9 +45,11 @@ function Chatbot() {
     <div className='relative grow flex flex-col gap-6 pt-6'>
       {messages.length === 0 && (
         <div className='mt-3 font-urbanist text-primary-blue text-xl font-light space-y-2'>
-          <p>👋 Welcome!</p>
-          <p>I am powered by the latest technology reports from leading institutions like the World Bank, the World Economic Forum, McKinsey, Deloitte, and the OECD.</p>
-          <p>Ask me anything about the latest technology trends.</p>
+          <p>😔 ¡Hola! Bienvenido a SadGPT.</p>
+          <p>📖 Soy tu compañero para escribir y reflexionar sobre tu día.</p>
+          <p>💭 Puedes contarme cómo te sientes, y yo analizaré tus emociones para ayudarte a entender mejor tu estado de ánimo.</p>
+          <p>📊 Además, puedo hacer un pequeño análisis de sentimiento para que veas la evolución de tu diario.</p>
+          <p>📝 Escribe cuando quieras, estoy aquí para escucharte.</p>
         </div>
       )}
       <ChatMessages

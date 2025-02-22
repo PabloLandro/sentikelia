@@ -15,6 +15,24 @@ async function sendChatMessage(message) {
   return out;
 }
 
+function login(username) {
+  return false
+  /*const res = await fetch(BASE_URL + `/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username })
+  })
+  const data = await res.json()
+  const out = data.message
+  return out=="true";*/
+}
+
+async function submitForm(data){
+
+}
+
 export default {
-  sendChatMessage
+  sendChatMessage,
+  login,
+  submitForm
 };

@@ -70,10 +70,7 @@ class MongoDBClient:
         result = self.db["usuarios"].insert_one(datos_iniciales)
         print(f"Usuario '{datos_iniciales['username']}' insertado con éxito.")
         return result.inserted_id  # Devolver el ID del nuevo usuario
-
-    def contexto_importante():
-        pass
-
+    
     def update_important_context(self, new_context, username):
         """Updates the 'important_context' field for a given user."""
         result = self.db["usuarios"].update_one(
@@ -91,6 +88,18 @@ class MongoDBClient:
         print(f"User '{username}': 'important_context' updated.")
         return True  # Successfully updated
     
+    """ Insertar nueva entrada en el diccionario """
+    def insert_diary_entry(self, diary_entry, username):
+        # Insertar en la coleccion de diarios
+        inserted_id = self.db["diarios"].insert_one(diary_entry).inserted_id
+
+        # Meter el resumen en el array
+        self.db["users"].update_one(
+            {"_id": username},
+            {"$push": {"entradas_diario": {"resumen": diary_entry["resumen"]}}}
+        )
+        return inserted_id
+
     """Recupera las últimas N entradas de diario de un usuario."""
     def get_last_diary_entries(self, username, N=5):
         return list(self.db["entradas_diario"]
@@ -98,17 +107,6 @@ class MongoDBClient:
                     .sort("_id", -1)
                     .limit(N))
 
-    """Inserta una nueva entrada de diario, referenciando el usuario por username."""
-    def insert_entrada_diario(self, username, entrada, resumen, importancia, analisis_vader=0.0, otros_analisis={}):
-        entrada_diario = {
-            "usuario": username,  # Ahora referencia al usuario por username
-            "entrada": entrada,
-            "resumen": resumen,
-            "importancia": importancia,
-            "analisis_vader": analisis_vader,
-            "otros_analisis": otros_analisis
-        }
-        return self.db["entradas_diario"].insert_one(entrada_diario).inserted_id
 
     """Actualiza la importancia de una entrada de diario por su _id."""
     def update_importancia(self, entrada_id, nueva_importancia):
