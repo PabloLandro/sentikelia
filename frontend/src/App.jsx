@@ -189,7 +189,7 @@ function App() {
       )}
 
       {/* Tabs */}
-      <div className="tabs">
+      <div className={`tabs ${(isLoginVisible || isFormVisible) ? 'blur-sm' : ''}`}>
         <button onClick={() => setActiveTab(0)} className={`tab-button ${activeTab === 0 ? 'active' : ''}`}>Chatbot</button>
         <button onClick={() => setActiveTab(1)} className={`tab-button ${activeTab === 1 ? 'active' : ''}`}>My Personality</button>
       </div>
