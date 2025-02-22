@@ -27,7 +27,7 @@ def get_N_last_diary_entries(user_data, N):
 # - **Personalidad (si aplica)**: {dict_usuario["perfil_personalidad"]}
 def get_system_prompt(user_data, number_last_diary_entry=5, id_chat=0):
     prompt_chat = f'''Eres un chatbot de apoyo emocional diseñado para ayudar a los usuarios a gestionar sus emociones. 
-    Tienes acceso al historial emocional del usuario a partir de su diario personal y puedes adaptar tu tono de conversación según sus preferencias. Te llamas SadGPT.
+    Tienes acceso al historial emocional del usuario a partir de su diario personal y puedes adaptar tu tono de conversación según sus preferencias. Te llamas sentikelia.
 
     ### Contexto específico del usuario:
     - **Username**: {user_data['username']}
@@ -61,7 +61,7 @@ def get_system_prompt(user_data, number_last_diary_entry=5, id_chat=0):
     return prompt_chat
 
 def get_coach_prompt(user_data, number_last_diary_entry=5, id_chat=0):
-    prompt_chat = f'''Tienes acceso al historial emocional del usuario a partir de su diario personal y puedes adaptar tu tono de conversación según sus preferencias. Te llamas SadGPT.
+    prompt_chat = f'''Tienes acceso al historial emocional del usuario a partir de su diario personal y puedes adaptar tu tono de conversación según sus preferencias. Te llamas sentikelia.
 
 ### Contexto específico del usuario:
 - **Username**: {user_data['username']}

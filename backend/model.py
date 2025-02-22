@@ -36,3 +36,7 @@ class UserData(BaseModel):
     chat_tone: int
     mensajes_chat: List[ChatEntry] = []
     diary: List[DiaryEntry] = []
+
+class ToneChangeRequest(BaseModel):
+    username: str
+    new_tone: int

@@ -35,7 +35,6 @@ async function submitForm(username, data){
   payload["important_context"] = data["important_context"]
   payload["chat_tone"] = parseInt(data["chat_tone"])
   payload["mensajes_chat"] = [];
-  console.log(payload);
   await fetch(BASE_URL + `/loginform`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -49,7 +48,6 @@ async function addDiaryEntry(username, diaryEntry, date) {
   const payload = {}
   payload["username"] = username
   payload["entry"] = { "entry": diaryEntry, "date": date}
-  console.log(payload)
   await fetch(BASE_URL + `/diary`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -62,13 +60,36 @@ async function addDiaryEntry(username, diaryEntry, date) {
 async function getDiaryEntries(username) {
   const res = await fetch(BASE_URL + `/diary?username=${encodeURIComponent(username)}`, {
     method: "GET",
-    header: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" },
     mode: "cors"
   })
   const rawBody = await res.text();
   const data = JSON.parse(rawBody);
-  console.log("Parsed response JSON:", data);
   return data; // Assuming the response contains a `message` property
+}
+
+async function getTone(username) {
+  const res = await fetch(BASE_URL + `/tone?username=${encodeURIComponent(username)}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    mode: "cors"
+  })
+  const rawBody = await res.text();
+  const data = JSON.parse(rawBody);
+  return data; // Assuming the response contains a `message` property
+}
+
+async function setTone(username, tone) {
+  const payload = {}
+  payload["username"] = username
+  payload["new_tone"] = parseInt(tone)
+  console.log(payload)
+  const res = await fetch(BASE_URL + `/tone`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    mode: "cors"
+  })
 }
 
 export default {
@@ -76,5 +97,7 @@ export default {
   login,
   submitForm,
   addDiaryEntry,
-  getDiaryEntries
+  getDiaryEntries,
+  getTone,
+  setTone
 };

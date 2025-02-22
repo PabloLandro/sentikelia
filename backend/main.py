@@ -74,3 +74,22 @@ async def new_diary_entry(diary_req: DiaryRequest):
 @app.post("/chatmode")
 async def modify_chat_mode(chat_mode):
     pass
+
+# Ruta para modificar el modo del chat, TODO
+@app.get("/tone")
+async def get_tone(username: str = Query(..., description="The username to fetch diary entries for")):
+    user = mongo_client.get_user(username)
+    if user is not None and "chat_tone" in user:
+        return JSONResponse(content={"message": user["chat_tone"]})
+    else:
+        return JSONResponse(content={"message": 0})
+
+# Ruta para modificar el modo del chat, TODO
+@app.post("/tone")
+async def update_tone(tone_req: ToneChangeRequest):
+    user = mongo_client.get_user(tone_req.username)
+    print("UPDATE TONE ", tone_req.username, tone_req.new_tone)
+    if user is not None and mongo_client.update_tone(tone_req):
+        return JSONResponse(content={"message": "true"})
+    else:
+        return JSONResponse(content={"message": "false"})

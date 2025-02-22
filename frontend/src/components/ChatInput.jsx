@@ -1,4 +1,9 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
+
+import api from '@/api';
+
+import { useStore } from 'react-context-hook'
+
 
 import useAutosize from '@/hooks/useAutosize';
 import sendIcon from '@/assets/images/send.svg';
@@ -14,6 +19,18 @@ const tonalidades = [
 function ChatInput({ newMessage, isLoading, setNewMessage, submitNewMessage }) {
   const textareaRef = useAutosize(newMessage);
   const [selectedTone, setSelectedTone] = useState(tonalidades[0].id);
+  const [username, setUsername] = useStore("username")
+  
+  useEffect(() => {
+    if (username == null) {
+      return
+    }
+    const fetchTone = async () => {
+      let tone = await api.getTone(username)
+      setSelectedTone(tone)
+    };
+    fetchTone();
+  },[username])
 
   function handleKeyDown(e) {
     if(e.keyCode === 13 && !e.shiftKey && !isLoading) {
@@ -21,16 +38,21 @@ function ChatInput({ newMessage, isLoading, setNewMessage, submitNewMessage }) {
       submitNewMessage();
     }
   }
+
+  function handleToneChange(event) {
+    setSelectedTone(Number(event.target.value))
+    api.setTone(username, Number(event.target.value))
+  }
   
   return(
-<div className='sticky bottom-0 bg-white py-4'>
+    <div className='sticky bottom-0 bg-white py-4'>
       <div className='p-1.5 bg-primary-blue/35 rounded-3xl z-50 font-mono origin-bottom animate-chat duration-400'>
         <div className='flex items-center relative bg-white rounded-3xl overflow-hidden ring-primary-blue ring-1 focus-within:ring-2 transition-all'>
           {/* Dropdown for chatbot personality */}
           <select
             className='w-28 bg-transparent border-r border-gray-300 text-sm outline-none px-2 py-1'
             value={selectedTone}
-            onChange={(e) => setSelectedTone(Number(e.target.value))}
+            onChange={handleToneChange}
           >
             {tonalidades.map(({ id, label }) => (
               <option key={id} value={id}>

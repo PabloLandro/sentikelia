@@ -169,6 +169,24 @@ class MongoDBClient:
             }
             for diary in user["diary"]
         }
+    def update_tone(self, tone_req: ToneChangeRequest) -> bool:
+        """
+        Updates the chat tone preference for a given user.
+
+        :param tone_req: Instance of ToneChangeRequest containing username and new_tone.
+        :return: True if the update was successful, False otherwise.
+        """
+        result = self.users_table.update_one(
+            {"username": tone_req.username},
+            {"$set": {"chat_tone": tone_req.new_tone}}
+        )
+
+        if result.matched_count == 0:
+            return False
+        elif result.modified_count == 0:
+            return True  # No modification needed, but user exists
+        return True  # Successfully updated
+
 
     def close(self):
         """Cierra la conexión con MongoDB."""

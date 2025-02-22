@@ -1,5 +1,5 @@
 import React from 'react';
-import { analyzeSentiment, classifyPersonality } from '../utils/analisis_sentimental';
+//import { analyzeSentiment, classifyPersonality } from '../utils/analisis_sentimental';
 
 
 const Personality = () => {
@@ -21,10 +21,22 @@ const Personality = () => {
                 <div>
                     <h3>Eneagrama</h3>
                     <p>El Eneagrama es un modelo de nueve tipos de personalidad que describe patrones en cómo las personas interpretan el mundo y gestionan sus emociones.</p>
+                    <p>Resultados del Eneagrama:</p>
+                    <ul>
+                        {enneagram_scores.map((score, index) => (
+                            <li key={index}>{score.name}: {score.score}</li>
+                        ))}
+                    </ul>
                 </div>
                 <div>
                     <h3>Big Five</h3>
                     <p>El modelo Big Five describe la personalidad en términos de cinco grandes dimensiones: apertura a la experiencia, responsabilidad, extraversión, amabilidad y neuroticismo.</p>
+                    <p>Resultados del Big Five:</p>
+                    <ul>
+                        {big5_traits.map((trait, index) => (
+                            <li key={index}>{trait.name}: {trait.score}</li>
+                        ))}
+                    </ul>
                 </div>
             </section>
         </div>

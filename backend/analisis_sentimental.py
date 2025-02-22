@@ -103,22 +103,23 @@ probabilities = (logits - logits.min()) / (logits.max() - logits.min())  # Norma
 # Save Big 5 personality traits in a variable
 big5_traits = dict(zip(labels, probabilities))
 
-# Plotting the Big 5 personality traits
-fig, ax = plt.subplots(figsize=(10, 6))
-ax.bar(labels, probabilities, color='skyblue')
-ax.set_ylim(0, 1)
-ax.set_ylabel('Probability')
-ax.set_title('Big 5 Personality Traits')
+# # Plotting the Big 5 personality traits
+# fig, ax = plt.subplots(figsize=(10, 6))
+# ax.bar(labels, probabilities, color='skyblue')
+# ax.set_ylim(0, 1)
+# ax.set_ylabel('Probability')
+# ax.set_title('Big 5 Personality Traits')
 
-# Adding labels on top of the bars
-for i, prob in enumerate(probabilities):
-    ax.text(i, prob + 0.02, f'{prob:.2f}', ha='center')
+# # Adding labels on top of the bars
+# for i, prob in enumerate(probabilities):
+#     ax.text(i, prob + 0.02, f'{prob:.2f}', ha='center')
 
-plt.tight_layout()
-plt.show()
 
 # Eneagram representation
 eneagram_labels = ["Reformer", "Helper", "Achiever", "Individualist", "Investigator", "Loyalist", "Enthusiast", "Challenger", "Peacemaker"]
 
 # Save Enneagram scores in a variable
 enneagram_scores = classify_enneagram(texto)
+
+print(enneagram_scores)
+print(big5_traits)

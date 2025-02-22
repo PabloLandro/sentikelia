@@ -1,6 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://db.onlinewebfonts.com/c/dd97c93d1184d223b93c9042b7e57980?family=Stratos+Web");
 
 /* Add background blur effect when login screen is visible */
+body {
+  font-family: "Stratos Web", sans-serif;
+}
+
 .blur-sm {
     filter: blur(5px);
   }
@@ -156,3 +161,28 @@ button:hover {
   font-style: normal;
 }
 
+/* body {
+  background: 
+    radial-gradient(circle, rgba(149, 70, 227, 0.2) 10%, transparent 11%),
+    radial-gradient(circle at bottom left, rgba(149, 70, 227, 0.1) 5%, transparent 6%),
+    radial-gradient(circle at bottom right, rgba(149, 70, 227, 0.1) 5%, transparent 6%),
+    radial-gradient(circle at top left, rgba(149, 70, 227, 0.1) 5%, transparent 6%),
+    radial-gradient(circle at top right, rgba(149, 70, 227, 0.1) 5%, transparent 6%);
+  background-size: 3em 3em;
+  background-color: rgba(255, 255, 255, 0.95);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+*/
+
+.diary-bg {
+  background-color: #fff;
+  background-image:
+  linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
+  linear-gradient(#eee .1em, transparent .1em);
+  background-size: 100% 1.2em;
+}
