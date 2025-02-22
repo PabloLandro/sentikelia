@@ -20,7 +20,8 @@ function ChatInput({ newMessage, isLoading, setNewMessage, submitNewMessage }) {
   const textareaRef = useAutosize(newMessage);
   const [selectedTone, setSelectedTone] = useState(tonalidades[0].id);
   const [username, setUsername] = useStore("username")
-  
+  const [pirateMode, setPirateMode] = useStore("pirateMode")
+
   useEffect(() => {
     if (username == null) {
       return
@@ -29,6 +30,8 @@ function ChatInput({ newMessage, isLoading, setNewMessage, submitNewMessage }) {
       console.log(username)
       let tone = await api.getTone(username)
       setSelectedTone(tone)
+      if(tone == 4) setPirateMode(true)
+      else setPirateMode(false)
     };
     fetchTone();
   },[username])
@@ -41,8 +44,11 @@ function ChatInput({ newMessage, isLoading, setNewMessage, submitNewMessage }) {
   }
 
   function handleToneChange(event) {
-    setSelectedTone(Number(event.target.value))
-    api.setTone(username, Number(event.target.value))
+    let tone = Number(event.target.value)
+    setSelectedTone(tone)
+    api.setTone(username, tone)
+    if(tone == 4) setPirateMode(true)
+    else setPirateMode(false)
   }
   
   return(
@@ -51,7 +57,7 @@ function ChatInput({ newMessage, isLoading, setNewMessage, submitNewMessage }) {
         <div className='flex items-center relative bg-white rounded-3xl overflow-hidden ring-primary-blue ring-1 focus-within:ring-2 transition-all'>
           {/* Dropdown for chatbot personality */}
           <select
-            className='w-28 bg-transparent border-r border-gray-300 text-sm outline-none px-2 py-1'
+            className='w-36 bg-transparent border-r border-gray-300 text-sm outline-none px-2 py-1'
             value={selectedTone}
             onChange={handleToneChange}
           >

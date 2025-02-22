@@ -2,6 +2,8 @@ import React from "react";
 
 import { useStore } from 'react-context-hook';
 
+import Background from '@/assets/images/background.png'
+
 import api from '@/api';
 
 function Login({ setIsFormVisible, setIsLoginVisible }) {
@@ -30,8 +32,8 @@ function Login({ setIsFormVisible, setIsLoginVisible }) {
 
     return (
         <div className="login-overlay">
-            <div className="login-container">
-              <h2 className="text-xl fix-weight">entra a <span className="title-text">sentikelia</span> 😊</h2>
+            <div className="login-container" style={{ backgroundImage: `url(${Background})` }}>
+              <h2 style={{ color: "white" }} className="text-xl fix-weight">entra a <span className="title-text">sentikelia</span> 😊</h2>
               <form className="login-form" onSubmit={handleLogin}>
                 <input
                   type="text"

@@ -2,7 +2,7 @@ from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uuid
-from gpt import chat_interaction, generate_diary_summary
+from gpt import *
 from analisis_sentimental import classify_enneagram, classify_big5
 from mongo_client import mongo_client
 from datetime import date
@@ -61,11 +61,11 @@ async def get_diary(username: str = Query(..., description="The username to fetc
 
 # Ruta para añadir entrada de diario
 @app.post("/diary")
-async def new_diary_entry(diary_req: DiaryRequest):
+async def new_diary_entry(diary_req: DiaryRequest): #username, entry  
     username = diary_req.username
     diary_entry = diary_req.entry
-    diary_entry.summary = generate_diary_summary(username, diary_entry.entry)
-    diary_entry
+    generate_new_context_from_diary(username, diary_entry.entry)
+
     # TODO importance and other analysis of the diary contents
     if mongo_client.insert_diary_entry(username, diary_entry) is not None:
         return JSONResponse(content={"message" : "true"})

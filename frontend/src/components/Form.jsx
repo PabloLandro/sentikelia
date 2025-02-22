@@ -2,7 +2,11 @@ import React, { useState } from "react"
 
 import api from '@/api';
 
+import { useStore } from "react-context-hook";
+
 function Form({ setIsFormVisible }) {
+
+  const [username, setUserName] = useStore('username')
 
     const [formData, setFormData] = React.useState({
         age: "",

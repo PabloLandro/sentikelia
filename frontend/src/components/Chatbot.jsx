@@ -47,11 +47,12 @@ function Chatbot() {
     <div className="min-h-screen flex flex-col h-full w-full">
       {messages.length === 0 && (
         <div className='mt-3 cursive-font text-xl font-light space-y-2'>
-          <p>😊 ¡Hola! Bienvenido a <span className="title-text-">sentikelia</span>.</p>
-          <p>📖 Soy tu compañero para escribir y reflexionar sobre tu día.</p>
-          <p>💭 Puedes contarme cómo te sientes, y yo analizaré tus emociones para ayudarte a entender mejor tu estado de ánimo.</p>
-          <p>📊 Además, puedo hacer un pequeño análisis de sentimiento para que veas la evolución de tu diario.</p>
-          <p>📝 Escribe cuando quieras, estoy aquí para escucharte.</p>
+          <p>¡Hola <span style={{ fontWeight: "bold" }}>{username}</span>! Bienvenido a <span className="title-text">sentikelia</span>.</p>
+          <p>Soy tu compañero para escribir y reflexionar sobre tu día.</p>
+          <p>También puedo recordarte tus metas y ayudarte a mantenerte enfocado.</p>
+          <p>En la pestaña de <span className="title-text">Diario</span> para empezar a escribir tu diario virtual, que yo recordaré.</p>
+          <p>Además, puedo hacer un pequeño análisis de <span className="title-text">Personalidad</span>.</p>
+          <p>Escribe cuando quieras, estoy aquí para escucharte.</p>
         </div>
       )}
       <ChatMessages

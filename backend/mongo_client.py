@@ -160,7 +160,7 @@ class MongoDBClient:
 
         if not user or "diary" not in user or user["diary"] is None:
             return {}  # Return empty dictionary if no entries found
-
+        
         return {
             diary["date"]: {  # Keep the date as a string
                 "entry": diary["entry"],

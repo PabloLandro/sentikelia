@@ -74,7 +74,7 @@ def chat_interaction(chat_req: ChatRequest):
 
         mongo_client.insert_chat_message(chat_entry, chat_req.username)
         # Añadir el contexto que la LLM piensa que es importante a MongoDB
-        mongo_client.update_important_context(response_json["important_context"], chat_req.username)
+        mongo_client.update_important_context(chat_req.username, response_json["important_context"])
         return response_json["respuesta"]
     else:
         raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")
@@ -86,5 +86,24 @@ def generate_diary_summary(username, diary_entry):
     if response.status_code == 200:
         response_content = response.json()['choices'][0]['message']['content']
         return response_content
+    else:
+        raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")
+    
+def generate_new_context_from_diary(username, diary_entry_str):
+    # Extraer el user data
+    user_data = mongo_client.get_dict_usuario(username)
+    # Sacar el system prompt y hacer la request al LLM
+    system_prompt = create_new_important_context_from_diary(user_data, diary_entry_str)
+    data = generate_chatgpt_data(system_prompt, diary_entry_str, 0.2)
+    # Hacer la request al LLM
+    print("DATA = ", data)
+    response = requests.post(API_URL, headers=REQUEST_HEADER, json=data)
+    if response.status_code == 200:
+        response_content = response.json()['choices'][0]['message']['content']
+        print("RESPONSE = ", response_content)
+        response_json = json.loads(response_content) # esto puede fallar si la LLM se vuelve loca
+        # Añadir el nuevo contexto importante a MongoDB
+        mongo_client.update_important_context(username, response_json["important_context"])
+        return response_json["important_context"]
     else:
         raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")

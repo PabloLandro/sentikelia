@@ -22,6 +22,7 @@ function Diary() {
   const [todayText, setTodayText] = useState("");
   const [username, setUsername] = useStore("username")
 
+
   useEffect(() => {
     const fetchEntries = async () => {
       const entries = await api.getDiaryEntries(username);
@@ -31,17 +32,19 @@ function Diary() {
     fetchEntries();
   }, []);
 
+  useEffect(() => {
+    if ((formatDate(selectedDate) in entries) && ("entry" in entries[formatDate(selectedDate)])) {
+      setTodayText(entries[formatDate(selectedDate)]["entry"]);
+    } else {
+      setTodayText("");
+    }
+  }, [ entries, selectedDate ])
+
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Normalize today's date
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    console.log(entries)
-    if ((formatDate(date) in entries) && ("entry" in entries[formatDate(date)])) {
-      setTodayText(entries[formatDate(date)]["entry"]);
-    } else {
-      setTodayText("");
-    }
   };
 
   const handleTextChange = (event) => {

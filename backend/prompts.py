@@ -65,6 +65,13 @@ def get_system_prompt(user_data, number_last_diary_entry=5, id_chat=0):
         "important_context": "Información relevante del usuario que el chatbot debe recordar en futuras interacciones. El value del campo es un string. Tratalo como si fuese una biografia del usuario, a partir del import_context anterior. puedes modificar, sustituir, borrar y añadir información.", 
         "new_mood": "Tan solo si el usuario acaba de cambiar mucho su mood después de la nueva interacción, describe su nuevo estado de ánimo para que podamos actualizarlo."
     }}
+
+    <<<Recuerda no borrar toda la información del contexto importante, solo añadir la información relevante de la conversación actual. Recuerda que el important context debe ser informacion suficiente para que el chatbot pueda describir de manera muy competente la situacion y progresion emocional del usuario,
+    hasta el punto de poder describir su personalidad y tendencia emocional extensamente. La longitud del important context no debe exceder los 600 tokens, pero es una aproximacion. >>>
+    Por ejemplo:
+    Antes del prompt, important_context: "Tengo un perro llamado Max y me encanta salir a correr con él."
+    El prompt es: "Hoy me contó que le encanta el agua y que le gustaría ir a la playa."
+    Después del prompt, important_context: "Tengo un perro llamado Max y me encanta salir a correr con él. Hoy me contó que le encanta el agua y que le gustaría ir a la playa."
     '''
     #print(prompt_chat)
     return prompt_chat
@@ -105,6 +112,10 @@ El formato de la respuesta debe ser un JSON con las siguientes claves:
 - **new_mood**: Tan solo si el usuario acaba de cambiar mucho su mood después de la nueva interacción, describe su nuevo estado de ánimo para que podamos actualizarlo.
 - **goal_progress**: (Opcional) Si el usuario menciona avances en sus objetivos, registra la información aquí.
 - **new_goals**: (Opcional) Si el usuario expresa nuevas metas, agrégalas aquí para actualizarlas en la base de datos.
+
+<<<Recuerda que el important context debe ser informacion suficiente para que el chatbot pueda describir de manera muy competente la situacion y progresion emocional del usuario,
+    hasta el punto de poder describir su personalidad y tendencia emocional extensamente. La longitud del important context no debe exceder los 600 tokens, pero es una aproximacion.>>>
+
     '''
 
     return prompt_chat
@@ -146,7 +157,7 @@ def prompt_resumir_diario(diario_full):
     return prompt_resumen
 
 def create_new_important_context_from_diary(user_data, new_context):
-    prompt = '''
+    prompt = f'''
     Dada una información de entrada del diario del usuario, debes devolver la siguiente variable:
 
     ### Input:
@@ -154,17 +165,33 @@ def create_new_important_context_from_diary(user_data, new_context):
     - **important_context**, y **new_diary_entry**.
 
     ### Output:
-    - A partir del important context y la nueva entrada del diario, debes devolver un nuevo important context actualizado con la informacion mas impo. 
-    Debes indentificar la información relevante de la entrada del diario y añadirla al important context.
+    - A partir del important context y la nueva entrada del diario, debes devolver un nuevo important context actualizado con la informacion mas importante del diary_entry. 
+    Es importante que sepas que no toda la información del new diary entry es relevante para el important context.
+    Indentifica la información relevante de la entrada del diario y añadela al important context.
+    <<<Recuerda que el important context puede contradecirse con la nueva entrada del diario, por lo tanto, debes ser cuidadoso al actualizarlo priorizando la información nueva del diario.>>>
 
+    Estas son las variables de input:
+    - Contexto importante: {user_data['important_context']}
+    - Nueva entrada del diario: {new_context}
+                                 
     ### Ejemplo:
     - **important_context**: "El usuario es un estudiante de 20 años que está lidiando con la presión académica."
     - **new_diary_entry**: "Hoy me sentí muy estresado por los exámenes finales y no pude dormir bien."
 
     ### Output: 
 
+    - "El usuario es un estudiante de 20 años que está lidiando con la presión académica 
+    y experimenta dificultades para dormir debido al estrés de los exámenes finales."
 
+    ### Formato de Respuesta:
+    - El formato de la respuesta debe ser en formato JSON y sin comentarios adicionales, ejemplo:
 
-'''
-    user_data['important_context'] = new_context
-    return user_data
+    {{
+        "important_context": "Información relevante del usuario que el chatbot debe recordar en futuras interacciones. El value del campo es un string. Tratalo como si fuese una biografia del usuario, a partir del import_context anterior. puedes modificar, sustituir, borrar y añadir información."
+    }}
+
+    <<<Recuerda que el important context debe ser informacion suficiente para que el chatbot pueda describir de manera muy competente la situacion y progresion emocional del usuario,
+    hasta el punto de poder describir su personalidad y tendencia emocional extensamente. La longitud del important context no debe exceder los 600 tokens, pero es una aproximacion.>>>
+
+    '''
+    return prompt
