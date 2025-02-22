@@ -3,6 +3,7 @@ import os, json, requests
 from prompts import *
 from context_manager import *
 from mongo_client import mongo_client
+from model import ChatRequest, ChatEntry
 
 # Get api key from .env
 load_dotenv()
@@ -62,18 +63,19 @@ def calculate_cost(response):
     }
 
 # Main function for interacting with the chatbot LLM
-def chat_interaction(prompt, username):
-    data = generate_chatgpt_data(get_system_prompt(mongo_client.get_dict_usuario(username)),
-        prompt, 0.2)
+def chat_interaction(chat_req: ChatRequest):
+    data = generate_chatgpt_data(get_system_prompt(mongo_client.get_dict_usuario(chat_req.username)),
+        chat_req.message, 0.2)
     
     response = requests.post(API_URL, headers=REQUEST_HEADER, json=data)
     if response.status_code == 200:
         response_content = response.json()['choices'][0]['message']['content']
         response_json = json.loads(response_content) # esto puede fallar si la LLM se vuelve loca
-        # Añadir a la in-memory store el contexto general del chat
-        append_context(username, prompt + response_json["respuesta"])
+        chat_entry = ChatEntry(prompt=chat_req.message, response=response_json["respuesta"])
+
+        mongo_client.insert_chat_message(chat_entry, chat_req.username)
         # Añadir el contexto que la LLM piensa que es importante a MongoDB
-        mongo_client.update_important_context(response_json["important_context"], username)
+        mongo_client.update_important_context(response_json["important_context"], chat_req.username)
         return response_json["respuesta"]
     else:
         raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")

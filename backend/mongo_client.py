@@ -3,8 +3,11 @@ from pymongo.errors import ConnectionFailure
 from bson import ObjectId
 import os, json
 from dotenv import load_dotenv
+from model import *
+import datetime
 
 load_dotenv()
+MAX_MESSAGES = 25
 
 class MongoDBClient:
     def __init__(self, db_name="sadgpt"):
@@ -20,6 +23,7 @@ class MongoDBClient:
         self.client = None
         self.db = None
         self.connect()
+        self.users_table = self.db["usuarios"]
 
     def connect(self):
         """Establece la conexión con MongoDB."""
@@ -31,16 +35,16 @@ class MongoDBClient:
         except ConnectionFailure as e:
             print(f"Error de conexión: {e}")
 
-    def get_user(self, username):
+    def get_user(self, username: str):
         """Recupera el JSON principal de un usuario basado en su nombre de usuario.
         Si no existe devuelve None."""
         try:
-            return self.db["usuarios"].find_one({"username": username}, {"_id": 0})  # Exclude MongoDB _id field
+            return self.users_table.find_one({"username": username}, {"_id": 0})  # Exclude MongoDB _id field
         except Exception as e:
             print(f"MongoDB Error: {e}")
             return None
 
-    def get_dict_usuario(self, username):
+    def get_dict_usuario(self, username: str):
         """
         Recupera los datos del usuario desde MongoDB y los convierte en un diccionario sin modificaciones.
 
@@ -56,30 +60,30 @@ class MongoDBClient:
 
         return json.loads(json.dumps(usuario_data))  # Asegura que sea un dict estándar
 
-    def insertar_usuario_inicial(self, datos_iniciales):
-        """
-        Inserta un usuario nuevo a la base de datos
-
-        Parámetros:
-        - datos_iniciales (dict): dict con los datos del usuario
-        """
-
-        # Verificar si el usuario ya existe
-        existing_user = self.get_user(datos_iniciales["username"]) 
-        if existing_user is not None:
-            print(f"Usuario '{datos_iniciales['username']}' ya existe.")
-            return None  # O podrías devolver el _id existente
-
-        # Insertar usuario nuevo
-        result = self.db["usuarios"].insert_one(datos_iniciales)
-        print(f"Usuario '{datos_iniciales['username']}' insertado con éxito.")
-        return result.inserted_id  # Devolver el ID del nuevo usuario
+    def insertar_usuario_inicial(self, user_data: UserData)  -> bool:
+        existing_user = self.users_table.find_one({"username": user_data.username})
+        if existing_user:
+            print(f"Usuario '{user_data.username}' ya existe.")
+            return False
+        user_data = user_data.model_dump()
+        result = self.users_table.insert_one(user_data)
+        return True
     
-    def update_important_context(self, new_context, username):
-        """Updates the 'important_context' field for a given user."""
-        result = self.db["usuarios"].update_one(
+    def update_important_context(self, username: str, new_context: str) -> bool:
+        user = self.users_table.find_one({"username": username})
+        if user and isinstance(user.get("important_context"), list):
+            self.users_table.update_one(
+                {"username": username},
+                {"$set": {"important_context": " ".join(user["important_context"])}}
+            )
+        else:
+            self.users_table.update_one(
+                {"username": username, "important_context": {"$exists": False}},
+                {"$set": {"important_context": ""}}
+            )
+        result = self.users_table.update_one(
             {"username": username},  # Find user by username
-            {"$set": {"important_context": new_context}}  # Update or create the field
+            {"$set": {"important_context": new_context}}  # Set the new context as a string
         )
 
         if result.matched_count == 0:
@@ -92,18 +96,80 @@ class MongoDBClient:
         print(f"User '{username}': 'important_context' updated.")
         return True  # Successfully updated
     
-    """ Insertar nueva entrada en el diccionario """
-    def insert_diary_entry(self, diary_entry, username):
-        # Insertar en la coleccion de diarios
-        inserted_id = self.db["diarios"].insert_one(diary_entry).inserted_id
-
-        # Meter el resumen en el array
-        self.db["users"].update_one(
-            {"_id": username},
-            {"$push": {"entradas_diario": {"resumen": diary_entry["resumen"]}}}
+    def insert_chat_message(self, chat_entry: ChatEntry, username: str) -> bool:
+        """Inserta un nuevo mensaje de chat en la base de datos y mantiene solo los últimos N mensajes."""
+        user = self.users_table.find_one({"username": username})
+        if not user:
+            return False
+        
+        self.users_table.update_one(
+            {"username": username},
+            {"$push": {"mensajes_chat": {"$each": [chat_entry.model_dump()], "$slice": -MAX_MESSAGES}}}
         )
-        return inserted_id
+        return True
+
+    def has_diary_entry_today(self, username: str) -> bool:
+        """Check if the user already has a diary entry for today."""
+        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_end = datetime.utcnow().replace(hour=23, minute=59, second=59, microsecond=999999)
+
+        user = self.users_table.find_one(
+            {
+                "username": username,
+                "diary.date": {"$gte": today_start, "$lte": today_end}
+            },
+            {"diary.$": 1}  # Project only the matching diary entry
+        )
+
+        return bool(user)  # Returns True if a diary entry for today exists
     
+    def insert_diary_entry(self, username: str, diary_entry: DiaryEntry) -> bool:
+        """
+        Inserts a new diary entry for a given user. If an entry on the same date exists, it replaces it.
+        
+        :param mongo_client: Instance of MongoDBClient.
+        :param username: Username of the user making the entry.
+        :param diary_entry: The diary entry to insert.
+        """
+        user = mongo_client.users_table.find_one({"username": username})
+        if not user:
+            raise ValueError("User not found")
+        
+        # Ensure diary list exists
+        if "diary" not in user:
+            user["diary"] = []
+        
+        # Check if an entry for the same date exists
+        existing_entries = user["diary"]
+        updated_entries = [entry for entry in existing_entries if entry["date"] != diary_entry.date]
+        
+        # Append the new entry
+        updated_entries.append(diary_entry.model_dump())
+        
+        # Update the user's diary in the database
+        result = mongo_client.users_table.update_one(
+            {"username": username},
+            {"$set": {"diary": updated_entries}}
+        )
+        
+        return result.modified_count > 0
+
+    def get_diary_entries(self, username: str):
+        """Retrieve all diary entries as a dictionary with date keys and entry values."""
+        user = self.users_table.find_one({"username": username}, {"diary": 1, "_id": 0})
+
+        if not user or "diary" not in user or user["diary"] is None:
+            return {}  # Return empty dictionary if no entries found
+
+        return {
+            diary["date"]: {  # Keep the date as a string
+                "entry": diary["entry"],
+                "summary": diary.get("summary"),
+                "importance": diary.get("importance")
+            }
+            for diary in user["diary"]
+        }
+
     def close(self):
         """Cierra la conexión con MongoDB."""
         if self.client:
@@ -111,33 +177,3 @@ class MongoDBClient:
             print("Conexión a MongoDB cerrada.")
 
 mongo_client = MongoDBClient()
-
-# # EJEMPLO DE USO
-# if __name__ == "__main__":
-#     mongopass = "tu_password_aqui"
-#     mongo_client = MongoDBClient(mongopass)
-
-#     # Obtener JSON principal de un usuario
-#     usuario_id = "65d1234567890abcdef12345"
-#     json_principal = mongo_client.get_json_principal(usuario_id)
-#     print("JSON principal:", json_principal)
-
-#     # Obtener las últimas 3 entradas de diario
-#     ultimas_entradas = mongo_client.get_last_diary_entries(usuario_id, N=3)
-#     print("Últimas entradas:", ultimas_entradas)
-
-#     # Insertar una nueva entrada
-#     entrada_id = mongo_client.insert_entrada_diario(
-#         usuario_id, "Hoy fue un buen día", "Día positivo con buen ánimo", 0.8
-#     )
-#     print("Entrada insertada con ID:", entrada_id)
-
-#     # Actualizar importancia
-#     updated = mongo_client.update_importancia(entrada_id, 1.0)
-#     print("Importancia actualizada:", updated)
-
-#     # Eliminar una entrada
-#     deleted = mongo_client.delete_entrada_diario(entrada_id)
-#     print("Entrada eliminada:", deleted)
-
-#     mongo_client.close()

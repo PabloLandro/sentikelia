@@ -43,8 +43,6 @@ function Chatbot() {
     }
   }
 
-  console.log(messages)
-
   return (
     <div className='relative grow flex flex-col gap-6 pt-6'>
       {messages.length === 0 && (

@@ -64,6 +64,7 @@ function App() {
     const data = formData
     data["characteristics"] = Object.keys(characteristics).filter(key => characteristics[key]);
     setIsFormVisible(false); // Hide the form after submission
+    console.log("Form Data being sent:", data);
     api.submitForm(username, data)
   };
 
