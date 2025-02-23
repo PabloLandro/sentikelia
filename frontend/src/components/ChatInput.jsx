@@ -9,6 +9,7 @@ import useAutosize from '@/hooks/useAutosize';
 import sendIcon from '@/assets/images/send.svg';
 
 const tonalidades = [
+  { id: -1, label: "⚙️ Auto " },
   { id: 0, label: "🙂 Neutral " },
   { id: 1, label: "💪 Motivacional " },
   { id: 2, label: "😌 Tranquilizador " },

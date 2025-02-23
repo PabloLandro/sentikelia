@@ -11,7 +11,7 @@ API_KEY = os.getenv("OPENAI_API_KEY")
 API_URL = "https://api.openai.com/v1/chat/completions"
 
 GPT_MODEL = "gpt-4o-mini"
-MAX_TOKENS = 1000
+MAX_TOKENS = 5000
 
 # Set up headers including the authorization token
 REQUEST_HEADER = {
