@@ -281,7 +281,10 @@ def generate_personality_assessment(text, big5, ennegram):
     ### Ejemplo:
 
     # Evaluación
-    Evaluación general del usuario basada en los datos proporcionados.
+    Eres extrovertido, aventurero y apasionado. Te encanta la emoción, la adrenalina y conocer gente nueva.
+    Tienes muchas ideas y proyectos en mente, pero a veces te sientes disperso y te cuesta concentrarte.
+    Sin embargo, los últimos registros del diario revelan una reflexión más profunda sobre tu equilibrio entre 
+    aventura y estabilidad, algo que no era tan evidente en el chat.
 
     ## Modelo del Eneagrama
     **Tipo de Eneagrama del usuario.**

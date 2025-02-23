@@ -237,7 +237,7 @@ const Personality = () => {
             </div>
 
             <section className="bg-white p-6 rounded-lg shadow mt-8">
-              <h2 className="text-xl font-semibold mb-4">Texto de ejemplo usado para análisis</h2>
+              <h2 className="text-xl font-semibold mb-4">Análisis de tu personalidad</h2>
               <ReactMarkdown>{explanation}</ReactMarkdown>
             </section>
           </div>

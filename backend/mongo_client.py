@@ -17,8 +17,7 @@ class MongoDBClient:
         :param mongopass: MongoDB password for authentication
         :param db_name: Database name
         """
-        mongopass = os.getenv("MONGO_PASSWORD")
-        self.uri = f"mongodb+srv://sadgpt:{mongopass}@sadgpt.ukjmz.mongodb.net/?retryWrites=true&w=majority&appName=sadgpt"
+        self.uri = os.getenv("MONGO_URI")
         self.db_name = db_name
         self.client = None
         self.db = None
