@@ -133,24 +133,38 @@ async def get_objectives(username: str = Query(..., description="The username to
     user_data = mongo_client.get_user(username)
 
     if user_data is not None:
-        return JSONResponse(content={"message": "true"})
+        return JSONResponse(content={"main_objective": user_data["main_objective"], "objectives": user_data["objectives"]})
     else:
         return JSONResponse(content={"message": "false"})
 
 @app.post("/coach/generate")
 async def generate_coach_objectives_suggestions(coach_req: CoachRequest):
     objectives_json = coach_generate_daily_objectives(coach_req)
+    # Add "completed": False to each objective
+    obj_dict_list = []
+    for idx, obj_str in enumerate(objectives_json["objectives"], start=1):
+        obj_dict_list.append({"id": idx, "completed": False, "text": obj_str})
+    objectives_json["objectives"] = obj_dict_list
+
     print("OBJECTIVES LIST: ", objectives_json["objectives"])
     mongo_client.update_objectives(coach_req.username, coach_req.main_objective, objectives_json["objectives"])
 
     # also generate initial suggestions and append them to the JSON
-    suggestions_json = coach_generate_recommendations(coach_req.username)
+    suggestions_json = coach_generate_suggestions(coach_req.username)
     return JSONResponse(content={
         "objectives": objectives_json["objectives"],
         "suggestions": suggestions_json["suggestions"]
     })    
-    
+
+@app.post("/coach/complete")
+async def coach_complete_obj(coach_obj_req: CompleteObjReq):
+    success = mongo_client.complete_objective(coach_obj_req.username, coach_obj_req.objective_id)
+    if success:
+        return JSONResponse(content={"message": "Objective marked as completed."}, status_code=200)
+    else:
+        return JSONResponse(content={"message": "Objective not found or could not be updated."}, status_code=404)
+
 @app.post("/coach/update")
 async def reload_coach_suggestions(req_user: RequestWithUsername):
-    suggestions_json = coach_generate_recommendations(req_user.username)
+    suggestions_json = coach_generate_suggestions(req_user.username)
     return JSONResponse(content=suggestions_json)

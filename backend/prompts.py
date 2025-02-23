@@ -96,15 +96,13 @@ def coach_generate_objectives_prompt(user_data, main_objective, number_last_diar
     - Los objetivos deben estar alineados con sus emociones, desafíos y necesidades personales.
     - **El formato de salida debe ser un JSON sin comentarios adicionales, siguiendo esta estructura**:
 
-    ```json
     {{
-        "daily_objectives": [
+        "objectives": [
             "Objetivo 1",
             "Objetivo 2",
             "Objetivo 3"
         ]
     }}
-    ```
 
     ## **Ejemplo**
     **Entrada:**
@@ -135,7 +133,7 @@ def coach_generate_suggestions_prompt(user_data, number_last_diary_entry=5):
 
     ## **Contexto del usuario**
     - **OBJETIVO PRINCIPAL**: {user_data["main_objective"]}
-    - **OBJETIVOS ACTUALES**: {", ".join(user_data["objectives"])}
+    - **OBJETIVOS ACTUALES**: {", ".join(obj["text"] for obj in user_data["objectives"])}
     - **Username**: {user_data['username']}
     - **Edad**: {user_data['age']}
     - **Últimas {number_last_diary_entry} entrada/s del diario**: {get_N_last_diary_entries(user_data, number_last_diary_entry)}
@@ -148,7 +146,6 @@ def coach_generate_suggestions_prompt(user_data, number_last_diary_entry=5):
     - Usa un lenguaje motivador y claro para fomentar el compromiso del usuario.
     - **El formato de salida debe ser un JSON sin comentarios adicionales, siguiendo esta estructura**:
 
-    ```json
     {{
         "suggestions": [
             "Sugerencia 1",
@@ -156,7 +153,6 @@ def coach_generate_suggestions_prompt(user_data, number_last_diary_entry=5):
             "Sugerencia 3"
         ]
     }}
-    ```
 
     ## **Ejemplo**
     **Entrada:**

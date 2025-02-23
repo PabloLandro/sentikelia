@@ -131,7 +131,7 @@ def coach_generate_daily_objectives(coach_req: CoachRequest):
     else:
         raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")
 
-def coach_generate_recommendations(username: str):
+def coach_generate_suggestions(username: str):
     # Retrieve user data from MongoDB
     user_data = mongo_client.get_dict_usuario(username)
     if not user_data:

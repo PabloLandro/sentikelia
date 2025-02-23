@@ -129,7 +129,7 @@ async function updatePersonality(username) {
   };
 }
 
-async function getObjectivesAndSuggestions(username) {
+async function getObjectives(username) {
   const res = await fetch(BASE_URL + `/coach/objectives?username=${encodeURIComponent(username)}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
@@ -171,9 +171,23 @@ async function reloadSuggestions(username, objectives) {
   })
 
   const data = await res.json()
+  console.log(data)
   return {
     newSuggestions: data.suggestions,
   }
+}
+
+async function toggleGoal(username, goalId) {
+  const payload = {}
+  payload["username"] = username
+  payload["objective_id"] = parseInt(goalId)
+
+  const res = await fetch (BASE_URL + `/coach/complete`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    mode: "cors"
+  })
 }
 
 export default {
@@ -186,7 +200,8 @@ export default {
   getTone,
   setTone,
   updatePersonality,
-  getObjectivesAndSuggestions,
+  getObjectives,
   generateCoachObjectivesAndSuggestions,
-  reloadSuggestions
+  reloadSuggestions,
+  toggleGoal
 }

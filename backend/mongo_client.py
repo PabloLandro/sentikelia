@@ -198,7 +198,7 @@ class MongoDBClient:
         result = self.users_table.update_one(
             {"username": username},
             
-            {"$set": {"main_objective": main_objective, "daily_objectives": objectives}}
+            {"$set": {"main_objective": main_objective, "objectives": objectives}}
         )
         if result.matched_count == 0:
             print(f"Usuario '{username}' no encontrado.")
@@ -208,6 +208,39 @@ class MongoDBClient:
             return True
         print(f"El campo 'objectives' del usuario '{username}' ha sido actualizado correctamente.")
         return True
+
+    def complete_objective(self, username: str, id: int) -> bool:
+        """
+        Alterna el estado de completado de un objetivo en la base de datos.
+
+        :param username: Nombre de usuario.
+        :param id: ID del objetivo a actualizar.
+        :return: True si la actualización fue exitosa, False en caso contrario.
+        """
+
+        # Find the current status of the objective
+        user = self.users_table.find_one({"username": username, "objectives.id": id}, {"objectives.$": 1})
+
+        if not user or "objectives" not in user or not user["objectives"]:
+            print(f"Usuario '{username}' o ID '{id}' no encontrado.")
+            return False
+
+        current_status = user["objectives"][0]["completed"]
+        new_status = not current_status  # Toggle the status
+
+        # Update the objective's "completed" field
+        result = self.users_table.update_one(
+            {"username": username, "objectives.id": id},
+            {"$set": {"objectives.$.completed": new_status}}
+        )
+
+        if result.modified_count > 0:
+            print(f"El objetivo con ID '{id}' ha sido {'completado' if new_status else 'desmarcado'} para el usuario '{username}'.")
+            return True
+
+        print(f"No se realizó ninguna modificación en el objetivo con ID '{id}' para el usuario '{username}'.")
+        return False
+
 
     def close(self):
         """Cierra la conexión con MongoDB."""

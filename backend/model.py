@@ -50,3 +50,7 @@ class PersonalityExplanationRequest(BaseModel):
 class CoachRequest(BaseModel):
     username: str
     main_objective: str
+
+class CompleteObjReq(BaseModel):
+    username: str
+    objective_id: int

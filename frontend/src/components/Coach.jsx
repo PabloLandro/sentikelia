@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from '@/api'; // Asegúrate de tener esta función de API implementada
 import ReloadWheel from '@/components/ReloadWheel';
 import { useStore } from "react-context-hook"
@@ -77,87 +77,61 @@ const initialSuggestions = [
 ];
 
 function Coach() {
-  const [prompt, setPrompt] = useState("");
-  const [goals, setGoals] = useState(initialGoals);
-  const [suggestions, setSuggestions] = useState(initialSuggestions);
-  const [explanation, setExplanation] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [username, setUserName] = useStore("username")
+    const [prompt, setPrompt] = useState("");
+    const [goals, setGoals] = useState(initialGoals);
+    const [suggestions, setSuggestions] = useState(initialSuggestions);
+    const [explanation, setExplanation] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [username, setUserName] = useStore("username")
+    useEffect(() => {
 
+        const fetchGoals = async () => {
+            let data = await api.getObjectives(username)
+            setGoals(data["objectives"])
+            setPrompt(data["main_objective"])
+        }
+
+        fetchGoals()
+    },[])
   const toggleGoal = (goalId) => {
     setGoals(goals.map(goal => 
       goal.id === goalId ? { ...goal, completed: !goal.completed } : goal
     ));
-  };
-
-  const showToast = (title, description, variant = "default") => {
-    alert(`${title}\n${description}`);
+    api.toggleGoal(username, goalId)
   };
 
   const handlePromptSubmit = async () => {
-    if (!prompt.trim()) {
-      showToast(
-        "El campo no puede estar vacío",
-        "Por favor, escribe tu objetivo",
-        "destructive"
-      );
-      return;
-    }
 
     setIsLoading(true);
 
     try {
       const response = await api.generateCoachObjectivesAndSuggestions(username, prompt);
-      const { newGoals, newSuggestions, newExplanation } = response;
+      let { newObjectives, newSuggestions, newExplanation } = response;
 
-      setGoals(newGoals);
+      setGoals(newObjectives);
+      newSuggestions = newSuggestions.map((objective, idx) => ({ id: idx, text: objective, type: "primary" }));
+      console.log(newSuggestions)
       setSuggestions(newSuggestions);
       setExplanation(newExplanation);
       setPrompt("");
     } catch (error) {
       console.error(error);
-      showToast(
-        "Error",
-        "Hubo un problema al procesar tu solicitud",
-        "destructive"
-      );
     } finally {
       setIsLoading(false);
     }
   }
 
   const handleReload = async () => {
-        if (objectives.length == 0) {
-            showToast(
-            "No hay objetivos",
-            "Por favor, escribe tu objetivo",
-            "destructive"
-            );
-            return;
-        }
     
         setIsLoading(true);
     
         try {
-            const response = await api.reloadSuggestions(username, objectives);
-            const { newGoals, newSuggestions, newExplanation } = response;
-    
-            setGoals(newGoals);
+            const response = await api.reloadSuggestions(username, goals);
+            console.log(response)
+            let newSuggestions = response["newSuggestions"].map((objective, idx) => ({ id: idx, text: objective, type: "primary" }));
             setSuggestions(newSuggestions);
-            setExplanation(newExplanation);
-            setPrompt("");
-    
-            showToast(
-            "Objetivos actualizados",
-            "He personalizado tus objetivos según tus necesidades"
-            );
         } catch (error) {
             console.error(error);
-            showToast(
-            "Error",
-            "Hubo un problema al procesar tu solicitud",
-            "destructive"
-            );
         } finally {
             setIsLoading(false);
         }
@@ -183,22 +157,28 @@ function Coach() {
         <div className="bg-white rounded-xl shadow-sm border border-neutral-light p-6">
           <h3 className="text-xl font-semibold text-neutral mb-4">Objetivos Diarios</h3>
           <div className="space-y-4">
-            {goals.map((goal) => (
-              <div
-                key={goal.id}
-                className="flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-light transition-colors cursor-pointer"
-                onClick={() => toggleGoal(goal.id)}
-              >
-                {goal.completed ? (
-                  <CheckCircleIcon />
-                ) : (
-                  <CircleIcon />
-                )}
-                <span className={goal.completed ? "line-through text-neutral/50" : "text-neutral"}>
-                  {goal.text}
-                </span>
-              </div>
+            {goals && goals.map((goal) => (
+                <label
+                    key={goal.id} // Unique key for each goal
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-light transition-colors cursor-pointer"
+                >
+                    <input
+                    type="checkbox"
+                    checked={goal.completed}
+                    onChange={() => toggleGoal(goal.id)} // Toggles the goal
+                    className="hidden" // Optionally hide the input if you don't want it visible
+                    />
+                    {goal.completed ? (
+                    <CheckCircleIcon className="text-green-500" />
+                    ) : (
+                    <CircleIcon className="text-gray-500" />
+                    )}
+                    <span className={goal.completed ? "line-through text-neutral/50" : "text-neutral"}>
+                    {goal.text}
+                    </span>
+                </label>
             ))}
+
           </div>
         </div>
 
@@ -208,22 +188,23 @@ function Coach() {
                 <ReloadWheel onClick={handleReload}/>
             </div>
           <div className="space-y-4">
-            {suggestions.map((suggestion) => (
-              <div
-                key={suggestion.id}
-                className={`p-4 rounded-lg ${
-                  suggestion.type === "primary" ? "bg-primary-light" : "bg-neutral-light"
+          {suggestions.map((suggestion, index) => (
+            <div
+                key={`${suggestion.id}-${suggestion.type}-${index}`} // Combines id, type, and index for uniqueness
+                className={`rounded-lg ${
+                suggestion.type === "primary" ? "bg-primary-light" : "bg-neutral-light"
                 }`}
-              >
+            >
                 <p
-                  className={`font-medium ${
+                className={`font-small ${
                     suggestion.type === "primary" ? "text-primary" : "text-neutral"
-                  }`}
+                }`}
                 >
-                  {suggestion.text}
+                {suggestion.text}
                 </p>
-              </div>
+            </div>
             ))}
+
           </div>
         </div>
       </div>
