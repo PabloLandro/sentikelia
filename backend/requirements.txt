@@ -6,4 +6,5 @@ pymongo
 transformers
 nltk
 numpy
-fastapi 
+fastapi
+tensorflow

@@ -180,4 +180,3 @@ async def bulb_question(personality_exp_req: CompleteBulbReq):
     print("BIG5 Data: ", big5)
     question = generate_bulby_questions(big5, enneagram)
     return JSONResponse(content=question)
-

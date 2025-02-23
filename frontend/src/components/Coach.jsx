@@ -184,7 +184,6 @@ function Coach() {
                     </span>
                 </label>
             ))}
-
           </div>
         </div>
 

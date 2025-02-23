@@ -47,10 +47,8 @@ def classify_big5(text):
     print(outputs)
     
     # Convertir logits a probabilidades usando sigmoid (o softmax si son clases exclusivas)
-    logits = outputs.logits.squeeze().detach().numpy()
-    scaled_values = torch.tanh(logits).numpy()
-    print(scaled_values)
-    probabilities = (scaled_values + 1) / 2
+    logits = outputs.logits.squeeze().detach()
+    probabilities = torch.exp(logits) / torch.exp(logits).sum()
 
     label_names = ['Extraversion', 'Neuroticism', 'Agreeableness', 'Conscientiousness', 'Openness']
     result = {label_names[i]: float(probabilities[i]) for i in range(len(label_names))}
