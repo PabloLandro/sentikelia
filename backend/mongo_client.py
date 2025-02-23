@@ -187,6 +187,28 @@ class MongoDBClient:
             return True  # No modification needed, but user exists
         return True  # Successfully updated
     
+    def update_objectives(self, username: str, main_objective: str, objectives: list) -> bool:
+        """
+        Actualiza el campo "objectives" del usuario en la base de datos.
+
+        :param username: Nombre de usuario.
+        :param objectives: Lista de objetivos a guardar.
+        :return: True si la actualización fue exitosa, False en caso contrario.
+        """
+        result = self.users_table.update_one(
+            {"username": username},
+            
+            {"$set": {"main_objective": main_objective, "daily_objectives": objectives}}
+        )
+        if result.matched_count == 0:
+            print(f"Usuario '{username}' no encontrado.")
+            return False
+        elif result.modified_count == 0:
+            print(f"No se realizó ninguna modificación en 'objectives' para el usuario '{username}'.")
+            return True
+        print(f"El campo 'objectives' del usuario '{username}' ha sido actualizado correctamente.")
+        return True
+
     def close(self):
         """Cierra la conexión con MongoDB."""
         if self.client:

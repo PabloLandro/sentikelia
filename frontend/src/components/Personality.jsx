@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
 import api from '@/api';
 import { useStore } from "react-context-hook";
+import ReactMarkdown from "react-markdown";
+
 
 
 // Subcomponent for the personality charts
@@ -140,6 +142,7 @@ const Personality = () => {
                 setIsLoading(true);
                 setError(null);
                 const results = await api.updatePersonality(username);
+              //const results = JSON.parse(response);
                 setPersonalityResults({
                     big5_result: results.big5_result,
                     enneagram_result: results.enneagram_result
@@ -159,13 +162,14 @@ const Personality = () => {
         analyzePersonality();
     }, []);
 
-    const [explanation_big5, setExplanation] = useState("");
+    const [explanation, setExplanation] = useState("");
 
     useEffect(() => {
+      if (personalityResults) {
       const fetchExplanation = async () => {
         try {
           const response = await api.getPersonalityExplanations(username, personalityResults.big5_result, personalityResults.enneagram_result);
-          setExplanation(response.explanation);
+          setExplanation(response);
         } catch (error) {
           console.error("Error fetching explanation:", error);
           setExplanation("No se pudo obtener la explicación. Por favor inténtelo de nuevo más tarde.");
@@ -173,7 +177,12 @@ const Personality = () => {
       };
 
       fetchExplanation();
-    }, [username]);
+      }
+    }, [username, personalityResults]);
+
+    useEffect(() => {
+      console.log(explanation)
+    }, [explanation])
 
     if (isLoading) {
         return (
@@ -192,52 +201,48 @@ const Personality = () => {
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-8 text-center">Sistema de Perfilado de Personalidad</h1>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8 text-center">Sistema de Perfilado de Personalidad</h1>
+        
+        {personalityResults && (
+          <div className="space-y-8">
+            {/* Charts */}
+            <PersonalityCharts personalityResults={personalityResults} />
             
-            {personalityResults && (
-                <div className="space-y-8">
-                    {/* Charts */}
-                    <PersonalityCharts personalityResults={personalityResults} />
-                    
-                    {/* Detailed Results */}
-                    <div className="grid md:grid-cols-2 gap-8">
-                        <section className="bg-white p-6 rounded-lg shadow">
-                            <h2 className="text-xl font-semibold mb-4">Resultados Big Five</h2>
-                            <div className="space-y-2">
-                                {Object.entries(personalityResults.big5_result).map(([trait, score]) => (
-                                    <div key={trait} className="flex justify-between items-center">
-                                        <span className="font-medium">{trait}</span>
-                                        <span className="text-gray-600">{(score * 100).toFixed(1)}%</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-                        
-                        <section className="bg-white p-6 rounded-lg shadow">
-                            <h2 className="text-xl font-semibold mb-4">Resultados Eneagrama</h2>
-                            <div className="space-y-2">
-                                {Object.entries(personalityResults.enneagram_result).map(([type, score]) => (
-                                    <div key={type} className="flex justify-between items-center">
-                                        <span className="font-medium">{type}</span>
-                                        <span className="text-gray-600">{score.toFixed(1)}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
+            {/* Detailed Results */}
+            <div className="grid md:grid-cols-2 gap-8">
+              <section className="bg-white p-6 rounded-lg shadow">
+                <h2 className="text-xl font-semibold mb-4">Resultados Big Five</h2>
+                <div className="space-y-2">
+                  {Object.entries(personalityResults.big5_result).map(([trait, score]) => (
+                    <div key={trait} className="flex justify-between items-center">
+                      <span className="font-medium">{trait}</span>
+                      <span className="text-gray-600">{(score * 100).toFixed(1)}%</span>
                     </div>
-
-                    <section className="bg-white p-6 rounded-lg shadow mt-8">
-                        <h2 className="text-xl font-semibold mb-4">Texto de ejemplo usado para análisis</h2>
-                        <p className="text-gray-700">
-                          
-                              {explanation_big5}
-
-                        </p>
-                    </section>
+                  ))}
                 </div>
-            )}
-        </div>
+              </section>
+              
+              <section className="bg-white p-6 rounded-lg shadow">
+                <h2 className="text-xl font-semibold mb-4">Resultados Eneagrama</h2>
+                <div className="space-y-2">
+                  {Object.entries(personalityResults.enneagram_result).map(([type, score]) => (
+                    <div key={type} className="flex justify-between items-center">
+                      <span className="font-medium">{type}</span>
+                      <span className="text-gray-600">{score.toFixed(1)}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </div>
+
+            <section className="bg-white p-6 rounded-lg shadow mt-8">
+              <h2 className="text-xl font-semibold mb-4">Texto de ejemplo usado para análisis</h2>
+              <ReactMarkdown>{explanation}</ReactMarkdown>
+            </section>
+          </div>
+        )}
+      </div>
     );
 };
 

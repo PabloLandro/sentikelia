@@ -11,7 +11,7 @@ import logo from '@/assets/images/logo.png';
 import './App.css';
 
 function App() {
-  const [isLoginVisible, setIsLoginVisible] = useState(true);
+  const [isLoginVisible, setIsLoginVisible] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [pirateMode, setPirateMode] = useStore("pirateMode")
 
@@ -83,7 +83,7 @@ function App() {
 }
 
 const initialState = {
-  username: "",
+  username: "Pablo Barba Negra",
   pirateMode: false
 };
 

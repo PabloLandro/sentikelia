@@ -2,7 +2,8 @@ from dotenv import load_dotenv
 import os, json, requests
 from prompts import *
 from mongo_client import mongo_client
-from model import ChatRequest, ChatEntry
+from model import ChatRequest, ChatEntry, CoachRequest
+
 
 # Get api key from .env
 load_dotenv()
@@ -105,5 +106,47 @@ def generate_new_context_from_diary(username, diary_entry_str):
         # Añadir el nuevo contexto importante a MongoDB
         mongo_client.update_important_context(username, response_json["important_context"])
         return response_json["important_context"]
+    else:
+        raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")
+
+def generate_personality_explanation(text, big5, ennegram):
+    data = generate_chatgpt_data(generate_personality_assessment(text, big5, ennegram), "", 0.2)
+    response = requests.post(API_URL, headers=REQUEST_HEADER, json=data)
+    if response.status_code == 200:
+        response_content = response.json()['choices'][0]['message']['content']
+        return response_content
+    else:
+        raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")
+
+def coach_generate_daily_objectives(coach_req: CoachRequest):
+    user_data = mongo_client.get_dict_usuario(coach_req.username)
+    system_prompt = coach_generate_objectives_prompt(user_data, coach_req.main_objective)
+    data = generate_chatgpt_data(system_prompt, coach_req.main_objective, 0.2)
+
+    response = requests.post(API_URL, headers=REQUEST_HEADER, json=data)
+    if response.status_code == 200:
+        response_content = response.json()['choices'][0]['message']['content']
+        response_json = json.loads(response_content) # esto puede fallar si la LLM se vuelve loca
+        return response_json
+    else:
+        raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")
+
+def coach_generate_recommendations(username: str):
+    # Retrieve user data from MongoDB
+    user_data = mongo_client.get_dict_usuario(username)
+    if not user_data:
+        return None
+    
+    system_prompt = coach_generate_suggestions_prompt(user_data)
+    data = generate_chatgpt_data(system_prompt, "", 0.2)
+    response = requests.post(API_URL, headers=REQUEST_HEADER, json=data)
+    
+    if response.status_code == 200:
+        response_content = response.json()['choices'][0]['message']['content']
+        try:
+            response_json = json.loads(response_content)
+            return response_json
+        except json.JSONDecodeError as e:
+            raise Exception("Failed to parse JSON response: " + str(e))
     else:
         raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")

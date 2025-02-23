@@ -46,3 +46,7 @@ class PersonalityExplanationRequest(BaseModel):
     username: str
     explanation_big5: dict
     explanation_ennegram: dict
+
+class CoachRequest(BaseModel):
+    username: str
+    main_objective: str

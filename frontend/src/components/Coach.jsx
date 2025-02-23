@@ -1,6 +1,9 @@
 import { useState } from "react";
 import api from '@/api'; // Asegúrate de tener esta función de API implementada
 import ReloadWheel from '@/components/ReloadWheel';
+import { useStore } from "react-context-hook"
+
+
 const CheckCircleIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -79,6 +82,7 @@ function Coach() {
   const [suggestions, setSuggestions] = useState(initialSuggestions);
   const [explanation, setExplanation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [username, setUserName] = useStore("username")
 
   const toggleGoal = (goalId) => {
     setGoals(goals.map(goal => 
@@ -103,18 +107,13 @@ function Coach() {
     setIsLoading(true);
 
     try {
-      const response = await api.sendChatMessage(prompt);
+      const response = await api.generateCoachObjectivesAndSuggestions(username, prompt);
       const { newGoals, newSuggestions, newExplanation } = response;
 
       setGoals(newGoals);
       setSuggestions(newSuggestions);
       setExplanation(newExplanation);
       setPrompt("");
-
-      showToast(
-        "Objetivos actualizados",
-        "He personalizado tus objetivos según tus necesidades"
-      );
     } catch (error) {
       console.error(error);
       showToast(
@@ -125,7 +124,44 @@ function Coach() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }
+
+  const handleReload = async () => {
+        if (objectives.length == 0) {
+            showToast(
+            "No hay objetivos",
+            "Por favor, escribe tu objetivo",
+            "destructive"
+            );
+            return;
+        }
+    
+        setIsLoading(true);
+    
+        try {
+            const response = await api.reloadSuggestions(username, objectives);
+            const { newGoals, newSuggestions, newExplanation } = response;
+    
+            setGoals(newGoals);
+            setSuggestions(newSuggestions);
+            setExplanation(newExplanation);
+            setPrompt("");
+    
+            showToast(
+            "Objetivos actualizados",
+            "He personalizado tus objetivos según tus necesidades"
+            );
+        } catch (error) {
+            console.error(error);
+            showToast(
+            "Error",
+            "Hubo un problema al procesar tu solicitud",
+            "destructive"
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -167,9 +203,9 @@ function Coach() {
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-neutral-light p-6">
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-4 mb-4 justify-betwee">
                 <h3 className="text-xl font-semibold text-neutral">Sugerencias</h3>
-                <ReloadWheel />
+                <ReloadWheel onClick={handleReload}/>
             </div>
           <div className="space-y-4">
             {suggestions.map((suggestion) => (

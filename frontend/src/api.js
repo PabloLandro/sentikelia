@@ -30,11 +30,11 @@ async function login(username) {
 async function getPersonalityExplanations(username, personality_big5, personality_enneagram) {
   const payload = {
     username: username,
-    personality_big5: personality_big5,
-    personality_enneagram: personality_enneagram
+    explanation_big5: personality_big5,
+    explanation_ennegram: personality_enneagram
   };
 
-  const res = await fetch(BASE_URL + `/personality/explanation`, {
+  const res = await fetch(BASE_URL + `/personalityexplanation`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -129,13 +129,64 @@ async function updatePersonality(username) {
   };
 }
 
+async function getObjectivesAndSuggestions(username) {
+  const res = await fetch(BASE_URL + `/coach/objectives?username=${encodeURIComponent(username)}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    mode: "cors"
+  })
+  const rawBody = await res.text();
+  const data = JSON.parse(rawBody);
+  return data; // Assuming the response contains a `message` property
+}
+
+async function generateCoachObjectivesAndSuggestions(username, prompt) {
+  const payload = {}
+  payload["username"] = username
+  payload["main_objective"] = prompt
+  
+  const res = await fetch (BASE_URL + `/coach/generate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    mode: "cors"
+  })
+
+  const data = await res.json()
+  return {
+    newObjectives: data.objectives,
+    newSuggestions: data.suggestions
+  }
+}
+
+async function reloadSuggestions(username, objectives) {
+  const payload = {}
+  payload["username"] = username
+  
+  const res = await fetch (BASE_URL + `/coach/update`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    mode: "cors"
+  })
+
+  const data = await res.json()
+  return {
+    newSuggestions: data.suggestions,
+  }
+}
+
 export default {
   sendChatMessage,
   login,
+  getPersonalityExplanations,
   submitForm,
   addDiaryEntry,
   getDiaryEntries,
   getTone,
   setTone,
-  updatePersonality
+  updatePersonality,
+  getObjectivesAndSuggestions,
+  generateCoachObjectivesAndSuggestions,
+  reloadSuggestions
 }

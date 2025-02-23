@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import wheel from '@/assets/images/reload-wheel.svg';
 
-function ReloadWheel() {
+function ReloadWheel({ onClick }) {
   // This state is used to force the image to reload by updating the query string.
   const [reloadKey, setReloadKey] = useState(Date.now());
   // This state toggles the animation class.
   const [isAnimating, setIsAnimating] = useState(false);
 
   const handleClick = () => {
+    onClick()
     // Update the reload key so the src changes
     setReloadKey(Date.now());
     // Start the animation

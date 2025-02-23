@@ -7,6 +7,7 @@ from analisis_sentimental import classify_enneagram, classify_big5
 from mongo_client import mongo_client
 from datetime import date
 from model import *
+import json
 app = FastAPI()
 
 # Config de CORS
@@ -110,7 +111,7 @@ async def update_personality(personality_req: PersonalityChangeRequest):
     # generar explicacoin llamando a llm
     return JSONResponse(content={"enneagram_result": enneagram_result, "big5_result": big5_result})
 
-@app.get("/personality/explanation")
+@app.post("/personalityexplanation")
 async def generate_big5_and_ennegram_explanation(personality_exp_req: PersonalityExplanationRequest):
     username = personality_exp_req.username
     userData = mongo_client.get_dict_usuario(username)
@@ -119,5 +120,37 @@ async def generate_big5_and_ennegram_explanation(personality_exp_req: Personalit
     diary = userData.get('diary', '')
     user_messages = " ".join([msg['prompt'] for msg in mensajes_chat])
     text = f"{important_context} {user_messages} {diary}"
-    big5 = personality_exp_req.big5
+    big5 = personality_exp_req.explanation_big5
+    enneagram = personality_exp_req.explanation_ennegram
+    
+    # Generar explicacion llamando a llm a partir de los resultados de big5 y enneagram y el texto
+    explanation_str = generate_personality_explanation(text, big5, enneagram)
+    return JSONResponse(content=explanation_str)
+    
+@app.get("/coach/objectives")
+async def get_objectives(username: str = Query(..., description="The username to fetch diary entries for")):
+    # devuelve un JSON con main_objective y daily_objectives
+    user_data = mongo_client.get_user(username)
 
+    if user_data is not None:
+        return JSONResponse(content={"message": "true"})
+    else:
+        return JSONResponse(content={"message": "false"})
+
+@app.post("/coach/generate")
+async def generate_coach_objectives_suggestions(coach_req: CoachRequest):
+    objectives_json = coach_generate_daily_objectives(coach_req)
+    print("OBJECTIVES LIST: ", objectives_json["objectives"])
+    mongo_client.update_objectives(coach_req.username, coach_req.main_objective, objectives_json["objectives"])
+
+    # also generate initial suggestions and append them to the JSON
+    suggestions_json = coach_generate_recommendations(coach_req.username)
+    return JSONResponse(content={
+        "objectives": objectives_json["objectives"],
+        "suggestions": suggestions_json["suggestions"]
+    })    
+    
+@app.post("/coach/update")
+async def reload_coach_suggestions(req_user: RequestWithUsername):
+    suggestions_json = coach_generate_recommendations(req_user.username)
+    return JSONResponse(content=suggestions_json)
