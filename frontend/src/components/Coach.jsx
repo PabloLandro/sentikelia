@@ -113,7 +113,6 @@ function Coach() {
       console.log(newSuggestions)
       setSuggestions(newSuggestions);
       setExplanation(newExplanation);
-      setPrompt("");
     } catch (error) {
       console.error(error);
     } finally {

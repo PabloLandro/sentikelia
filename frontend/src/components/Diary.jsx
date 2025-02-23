@@ -62,7 +62,6 @@ function Diary() {
     });
     api.addDiaryEntry(username, todayText, formatDate(new Date))
     // api.modifyImportantContext(username, todayText)
-    closeDiary()
   };
 
 
