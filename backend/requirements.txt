@@ -5,3 +5,5 @@ python-dotenv
 pymongo
 transformers
 nltk
+numpy
+fastapi 

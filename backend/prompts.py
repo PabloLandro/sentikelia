@@ -319,3 +319,46 @@ def generate_personality_assessment(text, big5, ennegram):
     Nota: Haz el mejor formato de markdown posible, lo anterior es solo para recordarte las secciones necesarias, haz un formato leíble y menciona "sigma boy"
     '''
     return prompt
+
+def generate_coach_questions(user_data):
+    prompt = f'''
+    Eres Sentikelia, un asistente de coaching emocional con acceso a la base de datos del usuario. 
+    Tu tarea es generar preguntas personalizadas para el usuario basándote en su perfil de personalidad, 
+    estado emocional y objetivos actuales.
+
+    ## **Contexto del usuario**
+    - **Perfil de personalidad**: {user_data["perfil_personalidad"]}
+
+    ## **Instrucciones**
+    - Basándote en la información proporcionada, genera **tres preguntas** que puedan ayudar al usuario a reflexionar sobre su estado emocional y avanzar hacia sus objetivos.
+    - Las preguntas deben ser abiertas y fomentar la introspección.
+    - Usa un lenguaje motivador y claro para fomentar el compromiso del usuario.
+    - **El formato de salida debe ser un JSON sin comentarios adicionales, siguiendo esta estructura**:
+
+    {{
+        "questions": [
+            "Pregunta 1",
+            "Pregunta 2",
+            "Pregunta 3"
+        ]
+    }}
+
+    ## **Ejemplo**
+    **Entrada:**
+    - **Perfil de personalidad**: "El usuario es una persona introvertida que valora la reflexión y la introspección."
+
+    **Salida esperada:**
+    {{
+        "questions": [
+            "¿Qué técnicas de gestión del tiempo has encontrado útiles en el pasado?",
+            "¿Cómo te sientes cuando piensas en los exámenes?",
+            "¿Qué actividades te ayudan a reducir la ansiedad?"
+        ]
+    }}
+
+    **Consideraciones finales:**
+    - Sé concreto y útil en las preguntas.
+    - Evita preguntas genéricas, adáptalas a la situación del usuario.
+    - Asegúrate de que las preguntas sean motivadoras y fomenten la reflexión.
+    '''
+    return prompt
