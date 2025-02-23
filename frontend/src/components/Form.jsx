@@ -10,9 +10,8 @@ function Form({ setIsFormVisible }) {
 
     const [formData, setFormData] = React.useState({
         age: "",
-        mood: "",
         important_context: "",
-        chat_tone: "formal", // default value
+        chat_tone: 0, // default value
     });
 
     const [characteristics, setCharacteristics] = useState({
