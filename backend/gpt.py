@@ -150,3 +150,18 @@ def coach_generate_suggestions(username: str):
             raise Exception("Failed to parse JSON response: " + str(e))
     else:
         raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")
+    
+
+
+def generate_bulby_questions(big5, ennegram):
+    data = generate_chatgpt_data(generate_coach_questions(big5, ennegram), "", 0.2)
+    response = requests.post(API_URL, headers=REQUEST_HEADER, json=data) ### 
+    if response.status_code == 200:
+        response_content = response.json()['choices'][0]['message']['content']
+        try:
+            response_json = json.loads(response_content)
+            return response_json
+        except json.JSONDecodeError as e:
+            raise Exception("Failed to parse JSON response: " + str(e))
+    else:
+        raise Exception(f"OpenAI API request failed with status code {response.status_code}: {response.text}")

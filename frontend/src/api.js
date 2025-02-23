@@ -190,6 +190,24 @@ async function toggleGoal(username, goalId) {
   })
 }
 
+
+async function generar_pregunta_bulb(username) {
+  const payload = {
+    username: username
+  };
+
+  const res = await fetch(BASE_URL + `/bulb/question`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    mode: "cors"
+  });
+
+  const data = await res.json();
+  console.log(data)
+  return data;
+}
+
 export default {
   sendChatMessage,
   login,
@@ -203,5 +221,6 @@ export default {
   getObjectives,
   generateCoachObjectivesAndSuggestions,
   reloadSuggestions,
-  toggleGoal
+  toggleGoal,
+  generar_pregunta_bulb
 }

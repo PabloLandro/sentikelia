@@ -320,27 +320,24 @@ def generate_personality_assessment(text, big5, ennegram):
     '''
     return prompt
 
-def generate_coach_questions(user_data):
+def generate_coach_questions(big5, ennegram):
     prompt = f'''
     Eres Sentikelia, un asistente de coaching emocional con acceso a la base de datos del usuario. 
-    Tu tarea es generar preguntas personalizadas para el usuario basándote en su perfil de personalidad, 
+    Tu tarea es generar una pregunta personalizada para el usuario basándote en su perfil de personalidad, 
     estado emocional y objetivos actuales.
 
     ## **Contexto del usuario**
-    - **Perfil de personalidad**: {user_data["perfil_personalidad"]}
+    - **Perfil de personalidad big5**: {big5}
+    - **Perfil de personalidad ennegram**: {ennegram}
 
     ## **Instrucciones**
-    - Basándote en la información proporcionada, genera **tres preguntas** que puedan ayudar al usuario a reflexionar sobre su estado emocional y avanzar hacia sus objetivos.
-    - Las preguntas deben ser abiertas y fomentar la introspección.
+    - Basándote en la información proporcionada, genera **una pregunta** que pueda ayudar al usuario a reflexionar sobre su estado emocional y avanzar hacia sus objetivos.
+    - La pregunta debe ser abierta y fomentar la introspección.
     - Usa un lenguaje motivador y claro para fomentar el compromiso del usuario.
     - **El formato de salida debe ser un JSON sin comentarios adicionales, siguiendo esta estructura**:
 
     {{
-        "questions": [
-            "Pregunta 1",
-            "Pregunta 2",
-            "Pregunta 3"
-        ]
+        "question": "Pregunta"
     }}
 
     ## **Ejemplo**
@@ -349,16 +346,12 @@ def generate_coach_questions(user_data):
 
     **Salida esperada:**
     {{
-        "questions": [
-            "¿Qué técnicas de gestión del tiempo has encontrado útiles en el pasado?",
-            "¿Cómo te sientes cuando piensas en los exámenes?",
-            "¿Qué actividades te ayudan a reducir la ansiedad?"
-        ]
+        "question": "¿Qué técnicas de gestión del tiempo has encontrado útiles en el pasado?"
     }}
 
     **Consideraciones finales:**
-    - Sé concreto y útil en las preguntas.
+    - Sé concreto y útil en la pregunta.
     - Evita preguntas genéricas, adáptalas a la situación del usuario.
-    - Asegúrate de que las preguntas sean motivadoras y fomenten la reflexión.
+    - Asegúrate de que la pregunta se pueda responder con diferentes objetivos.
     '''
     return prompt

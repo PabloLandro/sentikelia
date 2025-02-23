@@ -95,6 +95,21 @@ class MongoDBClient:
         print(f"User '{username}': 'important_context' updated.")
         return True  # Successfully updated
     
+    def update_personality(self, username: str, enneagram: dict, big5: dict) -> bool:
+        """Actualiza los resultados de personalidad en la base de datos."""
+        result = self.users_table.update_one(
+            {"username": username},
+            {"$set": {"enneagram": enneagram, "big5": big5}}
+        )
+        if result.matched_count == 0:
+            print(f"Usuario '{username}' no encontrado.")
+            return False
+        elif result.modified_count == 0:
+            print(f"No se realizó ninguna modificación en 'enneagram' y 'big5' para el usuario '{username}'.")
+            return True
+        print(f"Los resultados de personalidad para el usuario '{username}' han sido actualizados correctamente.")
+        return True
+
     def insert_chat_message(self, chat_entry: ChatEntry, username: str) -> bool:
         """Inserta un nuevo mensaje de chat en la base de datos y mantiene solo los últimos N mensajes."""
         user = self.users_table.find_one({"username": username})

@@ -108,6 +108,8 @@ async def update_personality(personality_req: PersonalityChangeRequest):
 
     enneagram_result = classify_enneagram(text)
     big5_result = classify_big5(text)
+
+    mongo_client.update_personality(username, enneagram_result, big5_result)
     # generar explicacoin llamando a llm
     return JSONResponse(content={"enneagram_result": enneagram_result, "big5_result": big5_result})
 
@@ -168,3 +170,14 @@ async def coach_complete_obj(coach_obj_req: CompleteObjReq):
 async def reload_coach_suggestions(req_user: RequestWithUsername):
     suggestions_json = coach_generate_suggestions(req_user.username)
     return JSONResponse(content=suggestions_json)
+
+@app.post("/bulb/question")
+async def bulb_question(personality_exp_req: CompleteBulbReq):
+    username = personality_exp_req.username
+    userData = mongo_client.get_dict_usuario(username)
+    big5 = userData.get('big5', '')
+    enneagram = userData.get('enneagram', '')
+    print("BIG5 Data: ", big5)
+    question = generate_bulby_questions(big5, enneagram)
+    return JSONResponse(content=question)
+

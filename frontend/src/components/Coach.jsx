@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import api from '@/api'; // Asegúrate de tener esta función de API implementada
 import ReloadWheel from '@/components/ReloadWheel';
-import { useStore } from "react-context-hook"
-
+import { useStore } from "react-context-hook";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip";
+import { Lightbulb } from "lucide-react";
 
 const CheckCircleIcon = () => (
   <svg
@@ -136,6 +137,12 @@ function Coach() {
         }
     };
 
+  const handleGenerateQuestion = async () => {
+    const question = await api.generar_pregunta_bulb(username);
+    console.log("BULB: ", question)
+    setPrompt(question["question"]);
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
@@ -210,13 +217,28 @@ function Coach() {
 
       <div className="bg-white rounded-xl shadow-sm border border-neutral-light p-6">
         <h3 className="text-xl font-semibold text-neutral mb-4">¿Qué objetivo te gustaría alcanzar?</h3>
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
           <input
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Escribe tu objetivo 💪"
             className="flex-1 h-10 rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
           />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button 
+                  onClick={() => { handleGenerateQuestion()}} 
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                >
+                  <Lightbulb className="h-4 w-4 text-yellow-500" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Generar pregunta</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <button 
             onClick={handlePromptSubmit} 
             disabled={isLoading}

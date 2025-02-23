@@ -54,3 +54,6 @@ class CoachRequest(BaseModel):
 class CompleteObjReq(BaseModel):
     username: str
     objective_id: int
+
+class CompleteBulbReq(BaseModel):
+    username: str
