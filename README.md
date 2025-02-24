@@ -1,4 +1,5 @@
 # sentikelia
+### UPDATE: Proyecto ganador de HackUDC! (track de Kelea)
 Esta aplicación web realizada para el hackathon __HackUDC__ se trata de un asistente psicológico personalizado, contiene 
 
 ### Funcionalidades
