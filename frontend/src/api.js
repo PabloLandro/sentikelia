@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "/api";
 
 async function sendChatMessage(message, username) {
   const res = await fetch(BASE_URL + `/chats`, {
@@ -89,12 +89,14 @@ async function getDiaryEntries(username) {
 }
 
 async function getTone(username) {
+	console.log(BASE_URL)
   const res = await fetch(BASE_URL + `/tone?username=${encodeURIComponent(username)}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
     mode: "cors"
   })
   const rawBody = await res.text();
+	console.log(rawBody)
   const data = JSON.parse(rawBody);
   return data; // Assuming the response contains a `message` property
 }
