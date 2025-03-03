@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
+    "local": "vite --config vite.config.local.js --host",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
