@@ -1,13 +1,10 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import uuid
 from gpt import *
 from analisis_sentimental import classify_enneagram, classify_big5
 from mongo_client import mongo_client
-from datetime import date
 from model import *
-import json
 app = FastAPI()
 
 # Config de CORS

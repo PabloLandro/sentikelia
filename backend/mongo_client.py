@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
-from bson import ObjectId
 import os, json
 from dotenv import load_dotenv
 from model import *
