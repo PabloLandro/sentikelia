@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { useStore } from 'react-context-hook';
 
@@ -10,10 +10,13 @@ function Login({ setIsFormVisible, setIsLoginVisible }) {
 
     const [username, setUsername] = useStore("username")
 
+    const [enteredName, setEnteredName] = useState("")
+
     const handleLogin = async (e) => {
+      setUsername(enteredName)
       console.log("click")
       e.preventDefault();
-      let login = await api.login(username);
+      let login = await api.login(enteredName);
       console.log(login)
       if (login) {
         setIsFormVisible(false);
@@ -27,7 +30,7 @@ function Login({ setIsFormVisible, setIsLoginVisible }) {
 
     const handleUsernameChange = (e) => {
       console.log(e.target.value)
-      setUsername(e.target.value);
+      setEnteredName(e.target.value)
     };
 
     return (
