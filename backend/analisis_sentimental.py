@@ -1,23 +1,17 @@
-from transformers import pipeline
-import nltk
-from collections import defaultdict
-import datetime
-from model import DiaryEntry
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import os
-import numpy as np
- 
-# Load the sentiment-analysis pipeline using a Spanish model
-sentiment_pipeline = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment", tokenizer="nlptown/bert-base-multilingual-uncased-sentiment")
- 
 def classify_enneagram(texto):
     """Clasifica un texto en los 9 tipos del Eneagrama basado en sentimiento."""
+    from transformers import pipeline  # Import inside the function
+    # Load the sentiment-analysis pipeline using a Spanish model
+    sentiment_pipeline = pipeline(
+        "sentiment-analysis", 
+        model="nlptown/bert-base-multilingual-uncased-sentiment", 
+        tokenizer="nlptown/bert-base-multilingual-uncased-sentiment"
+    )
+
     sentiment_result = sentiment_pipeline(texto)[0]  # Analiza el sentimiento
     rating = int(sentiment_result['label'][0])  # Extraer la estrella (1-5)
     print(rating)
- 
+
     # Mapeo heurístico de sentimiento a tipos del Eneagrama
     scores = {
         "Type 1 (Perfectionist)": rating * 0.9,  
@@ -30,15 +24,14 @@ def classify_enneagram(texto):
         "Type 8 (Challenger)": rating * 1.1,  
         "Type 9 (Peacemaker)": 3.5 if rating == 3 else (5 - abs(3 - rating)) * 1.2
     }
- 
+
     return scores
  
-from transformers import BertTokenizer, BertForSequenceClassification
-
-import torch
-import torch.nn.functional as F
-
 def classify_big5(text):
+    from transformers import BertTokenizer, BertForSequenceClassification  # Import inside the function
+    import torch
+    import torch.nn.functional as F
+
     tokenizer = BertTokenizer.from_pretrained("Minej/bert-base-personality")
     model = BertForSequenceClassification.from_pretrained("Minej/bert-base-personality")
 
